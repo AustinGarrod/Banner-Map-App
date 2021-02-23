@@ -50,4 +50,5 @@ class App extends Component {
   }
 }
 
+// Export the main app componenet
 export default App;
