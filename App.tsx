@@ -22,10 +22,16 @@ class App extends Component {
             <Stack.Screen 
               name={Screens.TableScreen}
               component={TableScreen}
+              options={{
+                title: 'Tap a name to learn more'
+              }}
             />
             <Stack.Screen 
               name={Screens.DetailsScreen}
               component={DetailsScreen}
+              options={{
+                title: 'Veteran Details'
+              }}
             />
           </Stack.Navigator>
         </NavigationContainer>
