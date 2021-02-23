@@ -1,14 +1,22 @@
+// Import libraries and components
 import React, { Component } from 'react';
 import { ScrollView, View, StyleSheet, Text } from 'react-native';
 import Banner from '../typescript/banner';
 
+// Define props for DetailsScreen componenet
 type Props = {
   route: { params: {
     details: Banner
   } };
 }
 
+/**
+ * Details screen componenet to display individual veteran details
+ */
 class DetailsScreen extends Component<Props> {
+  /**
+   * Render method to return TSX
+   */
   render(){
     return (
       <ScrollView>
@@ -54,6 +62,7 @@ class DetailsScreen extends Component<Props> {
   }
 }
 
+// Styles to format screen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -81,4 +90,5 @@ const styles = StyleSheet.create({
   }
 });
 
+// Export the details screen componenet
 export default DetailsScreen;
