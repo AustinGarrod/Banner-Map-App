@@ -26,49 +26,18 @@ class DetailsScreen extends Component<Props> {
 
     return (
       <ScrollView>
-        <View style={styles.container}>
-
-          <Card>
-            <Card.Content>
-              <DetailsRow title="Name" value={`${details.firstName} ${details.lastName}`} />
-              <DetailsRow title="Branch" value={details.branch !== "" ? details.branch : "-"} />
-              <DetailsRow title="Era" value={details.era !== "" ? details.era : "-"} />
-              <DetailsRow title="Banner Sponsor" value={details.sponsor !== "" ? details.sponsor : "-"}/>
-            </Card.Content>
-          </Card>
-        </View>
+        <Card>
+          <Card.Content>
+            <DetailsRow title="Name" value={`${details.firstName} ${details.lastName}`} />
+            <DetailsRow title="Branch" value={details.branch !== "" ? details.branch : "-"} />
+            <DetailsRow title="Era" value={details.era !== "" ? details.era : "-"} />
+            <DetailsRow title="Banner Sponsor" value={details.sponsor !== "" ? details.sponsor : "-"}/>
+          </Card.Content>
+        </Card>
       </ScrollView>
     )
   }
 }
-
-// Styles to format screen
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    alignItems: 'stretch'
-  },
-  row: {
-    flex: 1,
-    flexDirection: 'row'
-  },
-  labels: {
-    flex: 2,
-    padding: 10
-  },
-  labelText: {
-    fontWeight: "bold",
-    fontSize: 18
-  },
-  values: {
-    flex: 3,
-    padding: 10
-  },
-  valuesText: {
-    fontSize: 18
-  }
-});
 
 // Export the details screen componenet
 export default DetailsScreen;
