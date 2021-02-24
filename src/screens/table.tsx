@@ -13,6 +13,7 @@ import bannerData from '../data/banners.json';
 // Import typescript values
 import { ScreenStackParams } from '../typescript/screenparams';
 import { Screens } from '../typescript/screens';
+import Banner from '../typescript/banner';
 
 // Define props for TableScreen componenet
 type Props = {
@@ -30,13 +31,38 @@ class TableScreen extends Component<Props> {
   constructor(props: Props){
     super(props);
 
-    // TODO: Create banner filter
+    // this.state = {
+    //   banner: bannerData
+    // }
+
+    this.filterDisabledBanners = this.filterDisabledBanners.bind(this);
+    this.filterUnknownLocationBanners = this.filterUnknownLocationBanners.bind(this);
+  }
+
+  filterDisabledBanners(banners: Banner[]): Banner[] {
+    return banners.filter((banner) => {
+      return banner.enabled === true;
+    });
+  }
+
+  filterUnknownLocationBanners(banners: Banner[]): Banner[] {
+    return banners.filter((banner) => {
+      return banner.lat !== 0 && banner.long !==0;
+    })
   }
 
   /**
    * Render method to return TSX
    */
   render(){
+    console.log(bannerData.length)
+    console.log(this.filterDisabledBanners(bannerData).length)
+    console.log(
+      this.filterDisabledBanners(
+        this.filterUnknownLocationBanners(bannerData)
+      ).length
+    );
+
     return (
       <ScrollView>
         <DataTable>
