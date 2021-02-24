@@ -49,6 +49,8 @@ class TableScreen extends Component<Props, State> {
 
     // bind this for event handlers
     this.handleHeaderFirstNameTap = this.handleHeaderFirstNameTap.bind(this);
+    this.handleHeaderLastNameTap = this.handleHeaderLastNameTap.bind(this);
+    this.handleHeaderBranchTap = this.handleHeaderBranchTap.bind(this);
 
     this.state = {
       banners: banners,
@@ -165,6 +167,42 @@ class TableScreen extends Component<Props, State> {
   }
 
   /**
+   * Handles tap on last name header of table
+   */
+  handleHeaderLastNameTap(){
+    let banners: Banner[];
+    let direction: "ascending" | "descending" | undefined;
+
+    direction = this.state.lastNameSortDirection === "descending" ? "ascending" : "descending";
+    banners = this.sortBannersByLastName(this.state.banners, direction);
+
+    this.setState({
+      banners: banners,
+      firstNameSortDirection: undefined,
+      lastNameSortDirection: direction,
+      branchSortDirection: undefined
+    })
+  }
+
+  /**
+   * Handles tap on last name header of table
+   */
+  handleHeaderBranchTap(){
+    let banners: Banner[];
+    let direction: "ascending" | "descending" | undefined;
+
+    direction = this.state.branchSortDirection === "descending" ? "ascending" : "descending";
+    banners = this.sortBannersByBranch(this.state.banners, direction);
+
+    this.setState({
+      banners: banners,
+      firstNameSortDirection: undefined,
+      lastNameSortDirection: undefined,
+      branchSortDirection: direction
+    })
+  }
+
+  /**
    * Render method to return TSX
    */
   render(){
@@ -178,12 +216,22 @@ class TableScreen extends Component<Props, State> {
             >
               First
             </DataTable.Title>
-            <DataTable.Title sortDirection={this.state.lastNameSortDirection}>Last</DataTable.Title>
-            <DataTable.Title sortDirection={this.state.branchSortDirection}>Branch</DataTable.Title>
+            <DataTable.Title 
+              sortDirection={this.state.lastNameSortDirection}
+              onPress={this.handleHeaderLastNameTap}
+            >
+              Last
+            </DataTable.Title>
+            <DataTable.Title 
+              sortDirection={this.state.branchSortDirection}
+              onPress={this.handleHeaderBranchTap}
+            >
+              Branch
+            </DataTable.Title>
           </DataTable.Header>
 
           { // Loop through rows of veterans, creating new row for each
-            this.state.banners.slice(0, 20).map((banner, index) => {
+            this.state.banners.map((banner, index) => {
               return <TableRow key={index} navigation={this.props.navigation} banner={banner} />;
             })
           }
