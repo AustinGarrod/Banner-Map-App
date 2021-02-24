@@ -1,3 +1,6 @@
+/**
+ * Interface to define banner data
+ */
 export default interface Banner {
   number: number;
   poll: string;
