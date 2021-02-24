@@ -128,8 +128,6 @@ class TableScreen extends Component<Props> {
    * Render method to return TSX
    */
   render(){
-    console.log("\n\nNew Render \n")
-
     return (
       <ScrollView>
         <DataTable>
