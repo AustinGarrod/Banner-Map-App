@@ -39,30 +39,34 @@ class TableScreen extends Component<Props> {
     this.filterUnknownLocationBanners = this.filterUnknownLocationBanners.bind(this);
   }
 
+  /**
+   * Filters out banners that are disabled from array of banners
+   * @param banners Array of banners to be filtered
+   * @returns filtered list of banners
+   */
   filterDisabledBanners(banners: Banner[]): Banner[] {
     return banners.filter((banner) => {
       return banner.enabled === true;
     });
   }
 
+  /**
+   * Filters out banners without locations from array of banners
+   * @param banners Array of banners to be filtered
+   * @returns filtered list of banners
+   */
   filterUnknownLocationBanners(banners: Banner[]): Banner[] {
     return banners.filter((banner) => {
       return banner.lat !== 0 && banner.long !==0;
     })
   }
 
+
+
   /**
    * Render method to return TSX
    */
   render(){
-    console.log(bannerData.length)
-    console.log(this.filterDisabledBanners(bannerData).length)
-    console.log(
-      this.filterDisabledBanners(
-        this.filterUnknownLocationBanners(bannerData)
-      ).length
-    );
-
     return (
       <ScrollView>
         <DataTable>
