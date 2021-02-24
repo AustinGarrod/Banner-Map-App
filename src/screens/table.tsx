@@ -45,7 +45,7 @@ class TableScreen extends Component<Props> {
    * @returns filtered list of banners
    */
   filterDisabledBanners(banners: Banner[]): Banner[] {
-    return banners.filter((banner) => {
+    return {...banners}.filter((banner) => {
       return banner.enabled === true;
     });
   }
@@ -56,12 +56,10 @@ class TableScreen extends Component<Props> {
    * @returns filtered list of banners
    */
   filterUnknownLocationBanners(banners: Banner[]): Banner[] {
-    return banners.filter((banner) => {
+    return {...banners}.filter((banner) => {
       return banner.lat !== 0 && banner.long !==0;
     })
   }
-
-
 
   /**
    * Render method to return TSX

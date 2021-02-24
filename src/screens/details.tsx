@@ -18,6 +18,8 @@ class DetailsScreen extends Component<Props> {
    * Render method to return TSX
    */
   render(){
+    let details = this.props.route.params.details;
+
     return (
       <ScrollView>
         <View style={styles.container}>
@@ -26,7 +28,7 @@ class DetailsScreen extends Component<Props> {
               <Text style={styles.labelText}>Name</Text>
             </View>
             <View style={styles.values}>
-              <Text style={styles.valuesText}>{`${this.props.route.params.details.firstName} ${this.props.route.params.details.lastName}`}</Text>
+              <Text style={styles.valuesText}>{`${details.firstName} ${details.lastName}`}</Text>
             </View>
           </View>
 
@@ -35,7 +37,9 @@ class DetailsScreen extends Component<Props> {
               <Text style={styles.labelText}>Branch</Text>
             </View>
             <View style={styles.values}>
-              <Text style={styles.valuesText}>{this.props.route.params.details.branch}</Text>
+              <Text style={styles.valuesText}>
+                {details.branch !== "" ? details.branch : "-"}
+              </Text>
             </View>
           </View>
 
@@ -44,7 +48,7 @@ class DetailsScreen extends Component<Props> {
               <Text style={styles.labelText}>Era</Text>
             </View>
             <View style={styles.values}>
-              <Text style={styles.valuesText}>{this.props.route.params.details.era}</Text>
+              <Text style={styles.valuesText}>{details.era !== "" ? details.era : "-"}</Text>
             </View>
           </View>
 
@@ -53,7 +57,7 @@ class DetailsScreen extends Component<Props> {
               <Text style={styles.labelText}>Banner Sponsor</Text>
             </View>
             <View style={styles.values}>
-              <Text style={styles.valuesText}>{this.props.route.params.details.sponsor}</Text>
+              <Text style={styles.valuesText}>{details.sponsor !== "" ? details.sponsor : "-"}</Text>
             </View>
           </View>
         </View>
