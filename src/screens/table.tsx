@@ -34,9 +34,6 @@ class TableScreen extends Component<Props> {
     // this.state = {
     //   banner: bannerData
     // }
-
-    this.filterDisabledBanners = this.filterDisabledBanners.bind(this);
-    this.filterUnknownLocationBanners = this.filterUnknownLocationBanners.bind(this);
   }
 
   /**
@@ -45,7 +42,7 @@ class TableScreen extends Component<Props> {
    * @returns filtered list of banners
    */
   filterDisabledBanners(banners: Banner[]): Banner[] {
-    return {...banners}.filter((banner) => {
+    return [...banners].filter((banner) => {
       return banner.enabled === true;
     });
   }
@@ -56,15 +53,83 @@ class TableScreen extends Component<Props> {
    * @returns filtered list of banners
    */
   filterUnknownLocationBanners(banners: Banner[]): Banner[] {
-    return {...banners}.filter((banner) => {
+    return [...banners].filter((banner) => {
       return banner.lat !== 0 && banner.long !==0;
     })
+  }
+
+  /**
+   * Sort an array banners by first name
+   * @param banners Array of banners to be sorted
+   * @param order Order to sort by, "asc" or "desc"
+   */
+  sortBannersByFirstName(banners: Banner[], order?: string): Banner[] {
+    // Check if order ascending, otherwise assume descending
+    if (order === "asc") {
+      return [...banners].sort((a ,b) => {
+        if (a.firstName < b.firstName) return 1;
+        if (a.firstName > b.firstName) return -1;
+        return 0;
+      });
+    } else {
+      return [...banners].sort((a ,b) => {
+        if (a.firstName > b.firstName) return 1;
+        if (a.firstName < b.firstName) return -1;
+        return 0;
+      });
+    }
+  }
+
+  /**
+   * Sort an array banners by last name
+   * @param banners Array of banners to be sorted
+   * @param order Order to sort by, "asc" or "desc"
+   */
+  sortBannersByLastName(banners: Banner[], order?: string): Banner[] {
+    // Check if order ascending, otherwise assume descending
+    if (order === "asc") {
+      return [...banners].sort((a ,b) => {
+        if (a.lastName < b.lastName) return 1;
+        if (a.lastName > b.lastName) return -1;
+        return 0;
+      });
+    } else {
+      return [...banners].sort((a ,b) => {
+        if (a.lastName > b.lastName) return 1;
+        if (a.lastName < b.lastName) return -1;
+        return 0;
+      });
+    }
+  }
+
+  /**
+   * Sort an array banners by branch
+   * @param banners Array of banners to be sorted
+   * @param order Order to sort by, "asc" or "desc"
+   */
+  sortBannersByBranch(banners: Banner[], order?: string): Banner[] {
+    // Check if order ascending, otherwise assume descending
+    if (order === "asc") {
+      return [...banners].sort((a ,b) => {
+        if (a.branch < b.branch) return 1;
+        if (a.branch > b.branch) return -1;
+        return 0;
+      });
+    } else {
+      return [...banners].sort((a ,b) => {
+        if (a.branch > b.branch) return 1;
+        if (a.branch < b.branch) return -1;
+        return 0;
+      });
+    }
   }
 
   /**
    * Render method to return TSX
    */
   render(){
+    console.log("\n\nNew Render \n")
+
     return (
       <ScrollView>
         <DataTable>
