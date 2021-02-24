@@ -22,7 +22,10 @@ type Props = {
 
 // Define state for TableScreen componenet
 type State = {
-  banners: Banner[]
+  banners: Banner[],
+  firstNameSortDirection?: "ascending" | "descending" | undefined
+  lastNameSortDirection?: "ascending" | "descending" | undefined,
+  branchSortDirection?: "ascending" | "descending" | undefined
 }
 
 /**
@@ -44,8 +47,14 @@ class TableScreen extends Component<Props, State> {
     banners = this.filterUnknownLocationBanners(banners);
     banners = this.sortBannersByLastName(banners);
 
+    // bind this for event handlers
+    this.handleHeaderFirstNameTap = this.handleHeaderFirstNameTap.bind(this);
+
     this.state = {
-      banners: banners
+      banners: banners,
+      firstNameSortDirection: undefined,
+      lastNameSortDirection: "descending",
+      branchSortDirection: undefined
     }
   }
 
@@ -74,11 +83,11 @@ class TableScreen extends Component<Props, State> {
   /**
    * Sort an array banners by first name
    * @param banners Array of banners to be sorted
-   * @param order Order to sort by, "asc" or "desc"
+   * @param order Order to sort by, "ascending" or "descending"
    */
   sortBannersByFirstName(banners: Banner[], order?: string): Banner[] {
     // Check if order ascending, otherwise assume descending
-    if (order === "asc") {
+    if (order === "ascending") {
       return [...banners].sort((a ,b) => {
         if (a.firstName < b.firstName) return 1;
         if (a.firstName > b.firstName) return -1;
@@ -96,11 +105,11 @@ class TableScreen extends Component<Props, State> {
   /**
    * Sort an array banners by last name
    * @param banners Array of banners to be sorted
-   * @param order Order to sort by, "asc" or "desc"
+   * @param order Order to sort by, "ascending" or "descending"
    */
   sortBannersByLastName(banners: Banner[], order?: string): Banner[] {
     // Check if order ascending, otherwise assume descending
-    if (order === "asc") {
+    if (order === "ascending") {
       return [...banners].sort((a ,b) => {
         if (a.lastName < b.lastName) return 1;
         if (a.lastName > b.lastName) return -1;
@@ -118,11 +127,11 @@ class TableScreen extends Component<Props, State> {
   /**
    * Sort an array banners by branch
    * @param banners Array of banners to be sorted
-   * @param order Order to sort by, "asc" or "desc"
+   * @param order Order to sort by, "ascending" or "descending"
    */
   sortBannersByBranch(banners: Banner[], order?: string): Banner[] {
     // Check if order ascending, otherwise assume descending
-    if (order === "asc") {
+    if (order === "ascending") {
       return [...banners].sort((a ,b) => {
         if (a.branch < b.branch) return 1;
         if (a.branch > b.branch) return -1;
@@ -138,6 +147,24 @@ class TableScreen extends Component<Props, State> {
   }
 
   /**
+   * Handles tap on first name header of table
+   */
+  handleHeaderFirstNameTap(){
+    let banners: Banner[];
+    let direction: "ascending" | "descending" | undefined;
+
+    direction = this.state.firstNameSortDirection === "descending" ? "ascending" : "descending";
+    banners = this.sortBannersByFirstName(this.state.banners, direction);
+
+    this.setState({
+      banners: banners,
+      firstNameSortDirection: direction,
+      lastNameSortDirection: undefined,
+      branchSortDirection: undefined
+    })
+  }
+
+  /**
    * Render method to return TSX
    */
   render(){
@@ -145,9 +172,14 @@ class TableScreen extends Component<Props, State> {
       <ScrollView>
         <DataTable>
           <DataTable.Header>
-            <DataTable.Title>First</DataTable.Title>
-            <DataTable.Title>Last</DataTable.Title>
-            <DataTable.Title>Branch</DataTable.Title>
+            <DataTable.Title 
+              sortDirection={this.state.firstNameSortDirection}
+              onPress={this.handleHeaderFirstNameTap}
+            >
+              First
+            </DataTable.Title>
+            <DataTable.Title sortDirection={this.state.lastNameSortDirection}>Last</DataTable.Title>
+            <DataTable.Title sortDirection={this.state.branchSortDirection}>Branch</DataTable.Title>
           </DataTable.Header>
 
           { // Loop through rows of veterans, creating new row for each
