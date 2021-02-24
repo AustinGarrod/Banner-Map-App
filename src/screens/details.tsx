@@ -4,6 +4,9 @@ import { ScrollView, View, StyleSheet, Text } from 'react-native';
 import { Card } from 'react-native-paper'
 import Banner from '../typescript/banner';
 
+// Import componenets
+import DetailsRow from '../components/detailsRow'
+
 // Define props for DetailsScreen componenet
 type Props = {
   route: { params: {
@@ -27,45 +30,12 @@ class DetailsScreen extends Component<Props> {
 
           <Card>
             <Card.Content>
-              <View style={styles.row}>
-                <View style={styles.labels}>
-                  <Text style={styles.labelText}>Name</Text>
-                </View>
-                <View style={styles.values}>
-                  <Text style={styles.valuesText}>{`${details.firstName} ${details.lastName}`}</Text>
-                </View>
-              </View>
-
-              <View style={styles.row}>
-                <View style={styles.labels}>
-                  <Text style={styles.labelText}>Branch</Text>
-                </View>
-                <View style={styles.values}>
-                  <Text style={styles.valuesText}>
-                    {details.branch !== "" ? details.branch : "-"}
-                  </Text>
-                </View>
-              </View>
-
-              <View style={styles.row}>
-                <View style={styles.labels}>
-                  <Text style={styles.labelText}>Era</Text>
-                </View>
-                <View style={styles.values}>
-                  <Text style={styles.valuesText}>{details.era !== "" ? details.era : "-"}</Text>
-                </View>
-              </View>
-
-              <View style={styles.row}>
-                <View style={styles.labels}>
-                  <Text style={styles.labelText}>Banner Sponsor</Text>
-                </View>
-                <View style={styles.values}>
-                  <Text style={styles.valuesText}>{details.sponsor !== "" ? details.sponsor : "-"}</Text>
-                </View>
-              </View>
-              </Card.Content>
-            </Card>
+              <DetailsRow title="Name" value={`${details.firstName} ${details.lastName}`} />
+              <DetailsRow title="Branch" value={details.branch !== "" ? details.branch : "-"} />
+              <DetailsRow title="Era" value={details.era !== "" ? details.era : "-"} />
+              <DetailsRow title="Banner Sponsor" value={details.sponsor !== "" ? details.sponsor : "-"}/>
+            </Card.Content>
+          </Card>
         </View>
       </ScrollView>
     )
