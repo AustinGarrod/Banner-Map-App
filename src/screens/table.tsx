@@ -20,20 +20,33 @@ type Props = {
   navigation: StackNavigationProp<ScreenStackParams, Screens.TableScreen>
 }
 
+// Define state for TableScreen componenet
+type State = {
+  banners: Banner[]
+}
+
 /**
  * TableScreen componenet to display table of all veterans
  */
-class TableScreen extends Component<Props> {
+class TableScreen extends Component<Props, State> {
   /**
    * Constructor for componenent
    * @param props Props passed to component
    */
   constructor(props: Props){
+    // Pass props to react componenent class
     super(props);
 
-    // this.state = {
-    //   banner: bannerData
-    // }
+    let banners: Banner[];
+
+    // prepare banner data
+    banners = this.filterDisabledBanners(bannerData);
+    banners = this.filterUnknownLocationBanners(banners);
+    banners = this.sortBannersByLastName(banners);
+
+    this.state = {
+      banners: banners
+    }
   }
 
   /**
@@ -138,7 +151,7 @@ class TableScreen extends Component<Props> {
           </DataTable.Header>
 
           { // Loop through rows of veterans, creating new row for each
-            bannerData.slice(0, 20).map((banner, index) => {
+            this.state.banners.slice(0, 20).map((banner, index) => {
               return <TableRow key={index} navigation={this.props.navigation} banner={banner} />;
             })
           }
