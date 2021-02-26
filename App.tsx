@@ -32,7 +32,8 @@ class App extends Component {
               name={Screens.TableScreen}
               component={TableScreen}
               options={{
-                title: 'Tap a name to learn more'
+                title: 'Tap a name to learn more',
+                headerShown: false
               }}
             />
             <Stack.Screen 

@@ -219,8 +219,8 @@ class TableScreen extends Component<Props, State> {
               longitudeDelta: 0.15,
               latitudeDelta: 0.15
             }}
-            width={Dimensions.get('window').width}
-            height={Dimensions.get('window').height / 3.5}
+            width={Dimensions.get('screen').width}
+            height={Dimensions.get('screen').height / 3.5}
             markers={this.state.mappedBanners.map(banner => {
               return {latitude: banner.lat, longitude: banner.long};
             })}
@@ -267,10 +267,10 @@ class TableScreen extends Component<Props, State> {
 
 const styles = StyleSheet.create({
   mapArea: {
-    height: Dimensions.get('window').height / 3.5
+    height: Dimensions.get('screen').height / 3.5
   },
   tableArea: {
-    height: Dimensions.get('window').height - (Dimensions.get('window').height / 3.5)
+    height: Dimensions.get('screen').height - (Dimensions.get('screen').height / 3.5)
   }
 });
 
