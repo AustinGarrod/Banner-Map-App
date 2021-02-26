@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { ScrollView, View, StyleSheet, Text } from 'react-native';
 import { Card } from 'react-native-paper'
-import Banner from '../typescript/banner';
+import Banner from '../typescript/interfaces/banner';
 
 // Import componenets
 import DetailsRow from '../components/detailsRow'
