@@ -1,11 +1,12 @@
 // Import libraries and components
 import React, { Component } from 'react';
-import { ScrollView, TouchableOpacity } from 'react-native';
-import { DataTable } from 'react-native-paper';
+import { ScrollView, Dimensions } from 'react-native';
+import { DataTable, Card } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 // Import custom component
 import TableRow from '../components/tableRow';
+import Map from '../components/map';
 
 //  Import banner data from local file
 import bannerData from '../data/banners.json';
@@ -23,6 +24,7 @@ type Props = {
 // Define state for TableScreen componenet
 type State = {
   banners: Banner[],
+  mappedBanners: Banner[],
   firstNameSortDirection?: "ascending" | "descending" | undefined
   lastNameSortDirection?: "ascending" | "descending" | undefined,
   branchSortDirection?: "ascending" | "descending" | undefined
@@ -54,6 +56,7 @@ class TableScreen extends Component<Props, State> {
 
     this.state = {
       banners: banners,
+      mappedBanners: banners,
       firstNameSortDirection: undefined,
       lastNameSortDirection: "descending",
       branchSortDirection: undefined
@@ -208,35 +211,50 @@ class TableScreen extends Component<Props, State> {
   render(){
     return (
       <ScrollView>
-        <DataTable>
-          <DataTable.Header>
-            <DataTable.Title 
-              sortDirection={this.state.firstNameSortDirection}
-              onPress={this.handleHeaderFirstNameTap}
-            >
-              First
-            </DataTable.Title>
-            <DataTable.Title 
-              sortDirection={this.state.lastNameSortDirection}
-              onPress={this.handleHeaderLastNameTap}
-            >
-              Last
-            </DataTable.Title>
-            <DataTable.Title 
-              sortDirection={this.state.branchSortDirection}
-              onPress={this.handleHeaderBranchTap}
-            >
-              Branch
-            </DataTable.Title>
-          </DataTable.Header>
+        <Map 
+          region={{
+            latitude: 44.083071,
+            longitude: -79.154525,
+            longitudeDelta: 0.15,
+            latitudeDelta: 0.15
+          }}
+          width={Dimensions.get('window').width}
+          height={Dimensions.get('window').height / 3.5}
+          markers={this.state.mappedBanners.map(banner => {
+            return {latitude: banner.lat, longitude: banner.long};
+          })}
+        />
+        <Card>
+          <DataTable>
+            <DataTable.Header>
+              <DataTable.Title 
+                sortDirection={this.state.firstNameSortDirection}
+                onPress={this.handleHeaderFirstNameTap}
+              >
+                First
+              </DataTable.Title>
+              <DataTable.Title 
+                sortDirection={this.state.lastNameSortDirection}
+                onPress={this.handleHeaderLastNameTap}
+              >
+                Last
+              </DataTable.Title>
+              <DataTable.Title 
+                sortDirection={this.state.branchSortDirection}
+                onPress={this.handleHeaderBranchTap}
+              >
+                Branch
+              </DataTable.Title>
+            </DataTable.Header>
 
-          { // Loop through rows of veterans, creating new row for each
-            this.state.banners.map((banner, index) => {
-              return <TableRow key={index} navigation={this.props.navigation} banner={banner} />;
-            })
-          }
+            { // Loop through rows of veterans, creating new row for each
+              this.state.banners.map((banner, index) => {
+                return <TableRow key={index} navigation={this.props.navigation} banner={banner} />;
+              })
+            }
 
-        </DataTable>
+          </DataTable>
+        </Card>
       </ScrollView>
     )
   }
