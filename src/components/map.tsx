@@ -10,7 +10,7 @@ type Props = {
 }
 
 /**
- * Details screen componenet to display individual veteran details
+ * Map component to display map and markers
  */
 class Map extends Component<Props> {
 
@@ -33,6 +33,7 @@ class Map extends Component<Props> {
   }
 }
 
+// Map layout styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
