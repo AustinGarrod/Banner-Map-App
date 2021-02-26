@@ -1,5 +1,5 @@
 // Import banner interface
-import Banner from "./banner";
+import Banner from "../interfaces/banner";
 
 /**
  * Define paramaters passed to screen stacks from navigation
