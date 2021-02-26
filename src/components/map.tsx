@@ -6,7 +6,9 @@ import MapView, { Marker, Region, LatLng } from 'react-native-maps';
 // Define props for DetailsScreen componenet
 type Props = {
   region: Region,
-  markers: LatLng[]
+  markers: LatLng[],
+  width: number,
+  height: number
 }
 
 /**
@@ -21,7 +23,7 @@ class Map extends Component<Props> {
 
     return (
       <View style={styles.container}>
-        <MapView style={styles.map} region={this.props.region}>
+        <MapView style={{width: this.props.width, height: this.props.height}} region={this.props.region}>
           {
             this.props.markers.map((marker: LatLng) => {
               return <Marker key={marker.latitude+marker.longitude} coordinate={marker} />;
@@ -40,11 +42,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  map: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height / 2,
-  },
+  }
 });
 
 // Export the details screen componenet

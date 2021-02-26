@@ -1,6 +1,6 @@
 // Import libraries and components
 import React, { Component } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, Dimensions } from 'react-native';
 import { Card } from 'react-native-paper'
 import Banner from '../typescript/interfaces/banner';
 
@@ -10,16 +10,11 @@ import Map from '../components/map';
 
 // Define props for DetailsScreen componenet
 type Props = {
-  route: { params: {
-    details: Banner
-  } };
-}
-
-type Region = {
-  latitude: Number,
-  longitude: Number,
-  latitudeDelta: Number,
-  longitudeDelta: Number
+  route: { 
+    params: {
+      details: Banner
+    } 
+  };
 }
 
 /**
@@ -43,7 +38,8 @@ class DetailsScreen extends Component<Props> {
             longitudeDelta: 0.01,
             latitudeDelta: 0.01
           }}
-
+          width={Dimensions.get('window').width}
+          height={Dimensions.get('window').height / 2}
           markers={[{latitude: details.lat, longitude: details.long}]}
          />
 
