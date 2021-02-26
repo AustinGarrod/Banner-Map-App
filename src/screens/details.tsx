@@ -1,7 +1,6 @@
 // Import libraries and components
 import React, { Component } from 'react';
-import { ScrollView, View, StyleSheet, Text, Dimensions } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import { ScrollView } from 'react-native';
 import { Card } from 'react-native-paper'
 import Banner from '../typescript/interfaces/banner';
 
@@ -60,19 +59,6 @@ class DetailsScreen extends Component<Props> {
     )
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  map: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height / 2,
-  },
-});
 
 // Export the details screen componenet
 export default DetailsScreen;
