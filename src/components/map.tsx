@@ -25,8 +25,8 @@ class Map extends Component<Props> {
       <View style={styles.container}>
         <MapView style={{width: this.props.width, height: this.props.height}} region={this.props.region}>
           {
-            this.props.markers.map((marker: LatLng) => {
-              return <Marker key={marker.latitude+marker.longitude} coordinate={marker} />;
+            this.props.markers.map((marker: LatLng, index: number) => {
+              return <Marker key={`marker_${index}`} coordinate={marker} />;
             })
           }
         </MapView> 
