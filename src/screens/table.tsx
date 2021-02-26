@@ -1,6 +1,6 @@
 // Import libraries and components
 import React, { Component } from 'react';
-import { ScrollView, Dimensions } from 'react-native';
+import { ScrollView, View, Dimensions, StyleSheet } from 'react-native';
 import { DataTable, Card } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 
@@ -210,55 +210,69 @@ class TableScreen extends Component<Props, State> {
    */
   render(){
     return (
-      <ScrollView>
-        <Map 
-          region={{
-            latitude: 44.083071,
-            longitude: -79.154525,
-            longitudeDelta: 0.15,
-            latitudeDelta: 0.15
-          }}
-          width={Dimensions.get('window').width}
-          height={Dimensions.get('window').height / 3.5}
-          markers={this.state.mappedBanners.map(banner => {
-            return {latitude: banner.lat, longitude: banner.long};
-          })}
-        />
-        <Card>
-          <DataTable>
-            <DataTable.Header>
-              <DataTable.Title 
-                sortDirection={this.state.firstNameSortDirection}
-                onPress={this.handleHeaderFirstNameTap}
-              >
-                First
-              </DataTable.Title>
-              <DataTable.Title 
-                sortDirection={this.state.lastNameSortDirection}
-                onPress={this.handleHeaderLastNameTap}
-              >
-                Last
-              </DataTable.Title>
-              <DataTable.Title 
-                sortDirection={this.state.branchSortDirection}
-                onPress={this.handleHeaderBranchTap}
-              >
-                Branch
-              </DataTable.Title>
-            </DataTable.Header>
+      <View>
+        <View style={styles.mapArea}>
+          <Map 
+            region={{
+              latitude: 44.083071,
+              longitude: -79.154525,
+              longitudeDelta: 0.15,
+              latitudeDelta: 0.15
+            }}
+            width={Dimensions.get('window').width}
+            height={Dimensions.get('window').height / 3.5}
+            markers={this.state.mappedBanners.map(banner => {
+              return {latitude: banner.lat, longitude: banner.long};
+            })}
+          />
+        </View>
+        
+        <ScrollView style={styles.tableArea}>
+          <Card>
+            <DataTable>
+              <DataTable.Header>
+                <DataTable.Title 
+                  sortDirection={this.state.firstNameSortDirection}
+                  onPress={this.handleHeaderFirstNameTap}
+                >
+                  First
+                </DataTable.Title>
+                <DataTable.Title 
+                  sortDirection={this.state.lastNameSortDirection}
+                  onPress={this.handleHeaderLastNameTap}
+                >
+                  Last
+                </DataTable.Title>
+                <DataTable.Title 
+                  sortDirection={this.state.branchSortDirection}
+                  onPress={this.handleHeaderBranchTap}
+                >
+                  Branch
+                </DataTable.Title>
+              </DataTable.Header>
 
-            { // Loop through rows of veterans, creating new row for each
-              this.state.banners.map((banner, index) => {
-                return <TableRow key={index} navigation={this.props.navigation} banner={banner} />;
-              })
-            }
+              { // Loop through rows of veterans, creating new row for each
+                this.state.banners.map((banner, index) => {
+                  return <TableRow key={`row_${index}`} navigation={this.props.navigation} banner={banner} />;
+                })
+              }
 
-          </DataTable>
-        </Card>
-      </ScrollView>
+            </DataTable>
+          </Card>
+        </ScrollView>
+      </View>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  mapArea: {
+    height: Dimensions.get('window').height / 3.5
+  },
+  tableArea: {
+    height: Dimensions.get('window').height - (Dimensions.get('window').height / 3.5)
+  }
+});
 
 // Export TableScreen componenet
 export default TableScreen;
