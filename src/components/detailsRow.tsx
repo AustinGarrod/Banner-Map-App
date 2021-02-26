@@ -11,7 +11,7 @@ type Props = {
 /**
  * Componenet to display details for veteran
  */
-class DetailRow extends Component<Props> {
+class DetailsRow extends Component<Props> {
   /**
    * Render method to return TSX
    */
@@ -53,4 +53,4 @@ const styles = StyleSheet.create({
 });
 
 // Export TableRow componenet
-export default DetailRow;
+export default DetailsRow;
