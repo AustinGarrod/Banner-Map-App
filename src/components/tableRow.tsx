@@ -4,9 +4,9 @@ import { DataTable } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 // Import typescript values
-import Banner from '../typescript/banner';
-import { Screens } from '../typescript/screens';
-import { ScreenStackParams } from '../typescript/screenparams';
+import Banner from '../typescript/interfaces/banner';
+import { Screens } from '../typescript/enumerations/screens';
+import { ScreenStackParams } from '../typescript/types/screenparams';
 
 // Create custom navigation props definition 
 type TableNavigationProps = StackNavigationProp<ScreenStackParams, Screens.TableScreen>

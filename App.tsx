@@ -10,8 +10,8 @@ import TableScreen from './src/screens/table';
 import DetailsScreen from './src/screens/details';
 
 // Import typescript values
-import { ScreenStackParams } from './src/typescript/screenparams';
-import { Screens } from './src/typescript/screens';
+import { ScreenStackParams } from './src/typescript/types/screenparams';
+import { Screens } from './src/typescript/enumerations/screens';
 
 // Create a navigation stack
 const Stack = createStackNavigator<ScreenStackParams>();

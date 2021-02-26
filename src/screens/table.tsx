@@ -11,9 +11,9 @@ import TableRow from '../components/tableRow';
 import bannerData from '../data/banners.json';
 
 // Import typescript values
-import { ScreenStackParams } from '../typescript/screenparams';
-import { Screens } from '../typescript/screens';
-import Banner from '../typescript/banner';
+import { ScreenStackParams } from '../typescript/types/screenparams';
+import { Screens } from '../typescript/enumerations/screens';
+import Banner from '../typescript/interfaces/banner';
 
 // Define props for TableScreen componenet
 type Props = {
