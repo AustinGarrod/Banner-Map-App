@@ -1,6 +1,6 @@
 // Import libraries and components
 import React, { Component } from 'react';
-import { ScrollView, View, Dimensions, StyleSheet } from 'react-native';
+import { ScrollView, View, Dimensions, StyleSheet, Text } from 'react-native';
 import { DataTable, Card, TextInput } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import Fuse from 'fuse.js'
@@ -278,7 +278,7 @@ class TableScreen extends Component<Props, State> {
         </View>
         
         <ScrollView style={styles.tableArea}>
-          <Card>
+          <Card style={styles.tableAreaCard}>
             <DataTable>
               <DataTable.Header>
                 <DataTable.Title 
@@ -306,6 +306,10 @@ class TableScreen extends Component<Props, State> {
                   return <TableRow key={`row_${index}`} navigation={this.props.navigation} banner={banner} />;
                 })
               }
+              {
+                this.state.currentBanners.length === 0 && 
+                  <Text style={styles.noResultsMessage}>No Results Found</Text>
+              }
 
             </DataTable>
           </Card>
@@ -321,6 +325,14 @@ const styles = StyleSheet.create({
   },
   tableArea: {
     height: Dimensions.get('screen').height - SEARCH_AREA_HEIGHT - (Dimensions.get('screen').height / MAP_PERCENTAGE_FACTOR)
+  },
+  tableAreaCard: {
+    minHeight: Dimensions.get('screen').height - SEARCH_AREA_HEIGHT - (Dimensions.get('screen').height / MAP_PERCENTAGE_FACTOR)
+  },
+  noResultsMessage:{
+    flex: 1,
+    padding: 10,
+    textAlign: "center"
   },
   searchArea: {
     height: SEARCH_AREA_HEIGHT,
