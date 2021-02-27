@@ -30,6 +30,7 @@ type Props = {
 type State = {
   banners: Banner[],
   currentBanners: Banner[],
+  searchText: string,
   firstNameSortDirection?: "ascending" | "descending" | undefined
   lastNameSortDirection?: "ascending" | "descending" | undefined,
   branchSortDirection?: "ascending" | "descending" | undefined
@@ -63,6 +64,7 @@ class TableScreen extends Component<Props, State> {
     this.state = {
       banners: banners,
       currentBanners: banners,
+      searchText: "",
       firstNameSortDirection: undefined,
       lastNameSortDirection: "descending",
       branchSortDirection: undefined
@@ -235,6 +237,7 @@ class TableScreen extends Component<Props, State> {
 
       this.setState({
         currentBanners: results,
+        searchText: text,
         firstNameSortDirection: undefined,
         lastNameSortDirection: undefined,
         branchSortDirection: undefined
@@ -268,6 +271,7 @@ class TableScreen extends Component<Props, State> {
             <TextInput
               mode="outlined"
               label="Search"
+              value={this.state.searchText}
               onChangeText={text => this.handleSearchTextChange(text)}
             />
         </View>
@@ -320,7 +324,7 @@ const styles = StyleSheet.create({
   searchArea: {
     height: SEARCH_AREA_HEIGHT,
     padding: 5,
-    backgroundColor: "white"
+    backgroundColor: "white",
   }
 });
 
