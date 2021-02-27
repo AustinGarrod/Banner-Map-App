@@ -226,7 +226,7 @@ class TableScreen extends Component<Props, State> {
       const fuse = new Fuse(this.state.banners, {
         keys: ['lastName', 'firstName', 'bannerName', 'era', 'branch', 'sponsor'],
         threshold: 0.1,
-        findAllMatches: true
+        findAllMatches: true,
       });
   
       const results = fuse.search(text).map(result => {
@@ -234,7 +234,10 @@ class TableScreen extends Component<Props, State> {
       });
 
       this.setState({
-        currentBanners: results
+        currentBanners: results,
+        firstNameSortDirection: undefined,
+        lastNameSortDirection: undefined,
+        branchSortDirection: undefined
       });
     }
   }
