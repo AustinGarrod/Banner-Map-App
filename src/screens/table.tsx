@@ -221,7 +221,8 @@ class TableScreen extends Component<Props, State> {
       const results = this.state.banners;
 
       this.setState({
-        currentBanners: results
+        currentBanners: results,
+        searchText: text
       });
 
     } else {
