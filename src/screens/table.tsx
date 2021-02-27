@@ -30,7 +30,6 @@ type Props = {
 type State = {
   banners: Banner[],
   currentBanners: Banner[],
-  mappedBanners: Banner[],
   firstNameSortDirection?: "ascending" | "descending" | undefined
   lastNameSortDirection?: "ascending" | "descending" | undefined,
   branchSortDirection?: "ascending" | "descending" | undefined
@@ -64,7 +63,6 @@ class TableScreen extends Component<Props, State> {
     this.state = {
       banners: banners,
       currentBanners: banners,
-      mappedBanners: banners,
       firstNameSortDirection: undefined,
       lastNameSortDirection: "descending",
       branchSortDirection: undefined
@@ -170,7 +168,7 @@ class TableScreen extends Component<Props, State> {
     banners = this.sortBannersByFirstName(this.state.currentBanners, direction);
 
     this.setState({
-      banners: banners,
+      currentBanners: banners,
       firstNameSortDirection: direction,
       lastNameSortDirection: undefined,
       branchSortDirection: undefined
@@ -188,7 +186,7 @@ class TableScreen extends Component<Props, State> {
     banners = this.sortBannersByLastName(this.state.currentBanners, direction);
 
     this.setState({
-      banners: banners,
+      currentBanners: banners,
       firstNameSortDirection: undefined,
       lastNameSortDirection: direction,
       branchSortDirection: undefined
@@ -203,10 +201,10 @@ class TableScreen extends Component<Props, State> {
     let direction: "ascending" | "descending" | undefined;
 
     direction = this.state.branchSortDirection === "descending" ? "ascending" : "descending";
-    banners = this.sortBannersByBranch(this.state.banners, direction);
+    banners = this.sortBannersByBranch(this.state.currentBanners, direction);
 
     this.setState({
-      banners: banners,
+      currentBanners: banners,
       firstNameSortDirection: undefined,
       lastNameSortDirection: undefined,
       branchSortDirection: direction
@@ -216,19 +214,29 @@ class TableScreen extends Component<Props, State> {
   /**
    * Handles the search functionality
    */
-  handleSearchTextChange(text){
-    console.log(text)
-    const fuse = new Fuse(this.state.banners, {
-      keys: ['lastName', 'firstName', 'bannerName', 'era', 'branch', 'sponsor']
-    });
+  handleSearchTextChange(text: string){
+    if (text === "") {
+      const results = this.state.banners;
 
-    const results = fuse.search(text).map(result => {
-      return result.item;
-    });
+      this.setState({
+        currentBanners: results
+      });
 
-    this.setState({
-      currentBanners: results
-    })
+    } else {
+      const fuse = new Fuse(this.state.banners, {
+        keys: ['lastName', 'firstName', 'bannerName', 'era', 'branch', 'sponsor'],
+        threshold: 0.1,
+        findAllMatches: true
+      });
+  
+      const results = fuse.search(text).map(result => {
+        return result.item;
+      });
+
+      this.setState({
+        currentBanners: results
+      });
+    }
   }
 
   /**
@@ -247,7 +255,7 @@ class TableScreen extends Component<Props, State> {
             }}
             width={Dimensions.get('screen').width}
             height={Dimensions.get('screen').height / MAP_PERCENTAGE_FACTOR}
-            markers={this.state.mappedBanners.map(banner => {
+            markers={this.state.currentBanners.map(banner => {
               return {latitude: banner.lat, longitude: banner.long};
             })}
           />
