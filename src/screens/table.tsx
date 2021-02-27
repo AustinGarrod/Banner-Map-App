@@ -1,8 +1,9 @@
 // Import libraries and components
 import React, { Component } from 'react';
 import { ScrollView, View, Dimensions, StyleSheet } from 'react-native';
-import { DataTable, Card } from 'react-native-paper';
+import { DataTable, Card, TextInput } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
+import Fuse from 'fuse.js'
 
 // Import custom component
 import TableRow from '../components/tableRow';
@@ -18,6 +19,7 @@ import Banner from '../typescript/interfaces/banner';
 
 // Constants
 const MAP_PERCENTAGE_FACTOR = 3.5;
+const SEARCH_AREA_HEIGHT = 75;
 
 // Define props for TableScreen componenet
 type Props = {
@@ -27,7 +29,8 @@ type Props = {
 // Define state for TableScreen componenet
 type State = {
   banners: Banner[],
-  mappedBanners: Banner[],
+  currentBanners: Banner[],
+  searchText: string,
   firstNameSortDirection?: "ascending" | "descending" | undefined
   lastNameSortDirection?: "ascending" | "descending" | undefined,
   branchSortDirection?: "ascending" | "descending" | undefined
@@ -52,14 +55,16 @@ class TableScreen extends Component<Props, State> {
     banners = this.filterUnknownLocationBanners(banners);
     banners = this.sortBannersByLastName(banners);
 
-    // bind this for event handlers
+    // bind this for functions
     this.handleHeaderFirstNameTap = this.handleHeaderFirstNameTap.bind(this);
     this.handleHeaderLastNameTap = this.handleHeaderLastNameTap.bind(this);
     this.handleHeaderBranchTap = this.handleHeaderBranchTap.bind(this);
+    this.handleSearchTextChange = this.handleSearchTextChange.bind(this);
 
     this.state = {
       banners: banners,
-      mappedBanners: banners,
+      currentBanners: banners,
+      searchText: "",
       firstNameSortDirection: undefined,
       lastNameSortDirection: "descending",
       branchSortDirection: undefined
@@ -162,10 +167,10 @@ class TableScreen extends Component<Props, State> {
     let direction: "ascending" | "descending" | undefined;
 
     direction = this.state.firstNameSortDirection === "descending" ? "ascending" : "descending";
-    banners = this.sortBannersByFirstName(this.state.banners, direction);
+    banners = this.sortBannersByFirstName(this.state.currentBanners, direction);
 
     this.setState({
-      banners: banners,
+      currentBanners: banners,
       firstNameSortDirection: direction,
       lastNameSortDirection: undefined,
       branchSortDirection: undefined
@@ -180,10 +185,10 @@ class TableScreen extends Component<Props, State> {
     let direction: "ascending" | "descending" | undefined;
 
     direction = this.state.lastNameSortDirection === "descending" ? "ascending" : "descending";
-    banners = this.sortBannersByLastName(this.state.banners, direction);
+    banners = this.sortBannersByLastName(this.state.currentBanners, direction);
 
     this.setState({
-      banners: banners,
+      currentBanners: banners,
       firstNameSortDirection: undefined,
       lastNameSortDirection: direction,
       branchSortDirection: undefined
@@ -198,14 +203,46 @@ class TableScreen extends Component<Props, State> {
     let direction: "ascending" | "descending" | undefined;
 
     direction = this.state.branchSortDirection === "descending" ? "ascending" : "descending";
-    banners = this.sortBannersByBranch(this.state.banners, direction);
+    banners = this.sortBannersByBranch(this.state.currentBanners, direction);
 
     this.setState({
-      banners: banners,
+      currentBanners: banners,
       firstNameSortDirection: undefined,
       lastNameSortDirection: undefined,
       branchSortDirection: direction
     })
+  }
+
+  /**
+   * Handles the search functionality
+   */
+  handleSearchTextChange(text: string){
+    if (text === "") {
+      const results = this.state.banners;
+
+      this.setState({
+        currentBanners: results
+      });
+
+    } else {
+      const fuse = new Fuse(this.state.banners, {
+        keys: ['lastName', 'firstName', 'bannerName', 'era', 'branch', 'sponsor'],
+        threshold: 0.1,
+        findAllMatches: true,
+      });
+  
+      const results = fuse.search(text).map(result => {
+        return result.item;
+      });
+
+      this.setState({
+        currentBanners: results,
+        searchText: text,
+        firstNameSortDirection: undefined,
+        lastNameSortDirection: undefined,
+        branchSortDirection: undefined
+      });
+    }
   }
 
   /**
@@ -224,10 +261,19 @@ class TableScreen extends Component<Props, State> {
             }}
             width={Dimensions.get('screen').width}
             height={Dimensions.get('screen').height / MAP_PERCENTAGE_FACTOR}
-            markers={this.state.mappedBanners.map(banner => {
+            markers={this.state.currentBanners.map(banner => {
               return {latitude: banner.lat, longitude: banner.long};
             })}
           />
+        </View>
+
+        <View style={styles.searchArea}>
+            <TextInput
+              mode="outlined"
+              label="Search"
+              value={this.state.searchText}
+              onChangeText={text => this.handleSearchTextChange(text)}
+            />
         </View>
         
         <ScrollView style={styles.tableArea}>
@@ -255,7 +301,7 @@ class TableScreen extends Component<Props, State> {
               </DataTable.Header>
 
               { // Loop through rows of veterans, creating new row for each
-                this.state.banners.map((banner, index) => {
+                this.state.currentBanners.map((banner, index) => {
                   return <TableRow key={`row_${index}`} navigation={this.props.navigation} banner={banner} />;
                 })
               }
@@ -273,7 +319,12 @@ const styles = StyleSheet.create({
     height: Dimensions.get('screen').height / MAP_PERCENTAGE_FACTOR
   },
   tableArea: {
-    height: Dimensions.get('screen').height - (Dimensions.get('screen').height / MAP_PERCENTAGE_FACTOR)
+    height: Dimensions.get('screen').height - SEARCH_AREA_HEIGHT - (Dimensions.get('screen').height / MAP_PERCENTAGE_FACTOR)
+  },
+  searchArea: {
+    height: SEARCH_AREA_HEIGHT,
+    padding: 5,
+    backgroundColor: "white",
   }
 });
 
