@@ -16,6 +16,9 @@ import { ScreenStackParams } from '../typescript/types/screenparams';
 import { Screens } from '../typescript/enumerations/screens';
 import Banner from '../typescript/interfaces/banner';
 
+// Constants
+const MAP_PERCENTAGE_FACTOR = 3.5;
+
 // Define props for TableScreen componenet
 type Props = {
   navigation: StackNavigationProp<ScreenStackParams, Screens.TableScreen>
@@ -220,7 +223,7 @@ class TableScreen extends Component<Props, State> {
               latitudeDelta: 0.15
             }}
             width={Dimensions.get('screen').width}
-            height={Dimensions.get('screen').height / 3.5}
+            height={Dimensions.get('screen').height / MAP_PERCENTAGE_FACTOR}
             markers={this.state.mappedBanners.map(banner => {
               return {latitude: banner.lat, longitude: banner.long};
             })}
@@ -267,10 +270,10 @@ class TableScreen extends Component<Props, State> {
 
 const styles = StyleSheet.create({
   mapArea: {
-    height: Dimensions.get('screen').height / 3.5
+    height: Dimensions.get('screen').height / MAP_PERCENTAGE_FACTOR
   },
   tableArea: {
-    height: Dimensions.get('screen').height - (Dimensions.get('screen').height / 3.5)
+    height: Dimensions.get('screen').height - (Dimensions.get('screen').height / MAP_PERCENTAGE_FACTOR)
   }
 });
 
