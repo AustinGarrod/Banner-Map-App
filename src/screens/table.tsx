@@ -1,7 +1,7 @@
 // Import libraries and components
 import React, { Component } from 'react';
 import { ScrollView, View, Dimensions, StyleSheet, Text } from 'react-native';
-import { DataTable, Card, TextInput } from 'react-native-paper';
+import { DataTable, Card, TextInput, FAB } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import Fuse from 'fuse.js'
 
@@ -60,6 +60,7 @@ class TableScreen extends Component<Props, State> {
     this.handleHeaderLastNameTap = this.handleHeaderLastNameTap.bind(this);
     this.handleHeaderBranchTap = this.handleHeaderBranchTap.bind(this);
     this.handleSearchTextChange = this.handleSearchTextChange.bind(this);
+    this.handleClearTextboxTap = this.handleClearTextboxTap.bind(this);
 
     this.state = {
       banners: banners,
@@ -247,6 +248,13 @@ class TableScreen extends Component<Props, State> {
   }
 
   /**
+   * Handles tap on the clear textbox FAB
+   */
+  handleClearTextboxTap(){
+    this.handleSearchTextChange("");
+  }
+
+  /**
    * Render method to return TSX
    */
   render(){
@@ -269,12 +277,21 @@ class TableScreen extends Component<Props, State> {
         </View>
 
         <View style={styles.searchArea}>
-            <TextInput
-              mode="outlined"
-              label="Search"
-              value={this.state.searchText}
-              onChangeText={text => this.handleSearchTextChange(text)}
+          <TextInput
+            mode="outlined"
+            label="Search"
+            value={this.state.searchText}
+            onChangeText={text => this.handleSearchTextChange(text)}
+          />
+          {
+            this.state.searchText !== "" &&
+            <FAB
+              style={styles.clearTextboxFab}
+              small
+              icon="close"
+              onPress={this.handleClearTextboxTap}
             />
+          }
         </View>
         
         <ScrollView style={styles.tableArea}>
@@ -338,7 +355,14 @@ const styles = StyleSheet.create({
     height: SEARCH_AREA_HEIGHT,
     padding: 5,
     backgroundColor: "white",
-  }
+  },
+  clearTextboxFab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
+    zIndex: 1
+  },
 });
 
 // Export TableScreen componenet
