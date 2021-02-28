@@ -271,7 +271,9 @@ class HomeScreen extends Component<Props, State> {
             }}
             width={Dimensions.get('screen').width}
             height={Dimensions.get('screen').height / MAP_PERCENTAGE_FACTOR}
-            markers={[]}
+            markers={this.state.filteredBanners.map(banner => {
+              return { latitude: banner.lat, longitude: banner.long };
+            })}
           />
         </View>
 
