@@ -1,6 +1,6 @@
 // Import libraries and components
 import React, { Component } from 'react';
-import { ScrollView, View, Dimensions, StyleSheet, Text } from 'react-native';
+import { View, Dimensions, StyleSheet, Text } from 'react-native';
 import { DataTable, Card, TextInput, FAB } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import Fuse from 'fuse.js'
@@ -16,6 +16,7 @@ import bannerData from '../data/banners.json';
 import { ScreenStackParams } from '../typescript/types/screenparams';
 import { Screens } from '../typescript/enumerations/screens';
 import Banner from '../typescript/interfaces/banner';
+import { TableData } from '../components/tableData';
 
 // Constants
 const MAP_PERCENTAGE_FACTOR = 3.5;
@@ -29,7 +30,7 @@ type Props = {
 // Define state for TableScreen componenet
 type State = {
   banners: Banner[],
-  currentBanners: Banner[],
+  filteredBanners: Banner[],
   searchText: string,
   firstNameSortDirection?: "ascending" | "descending" | undefined
   lastNameSortDirection?: "ascending" | "descending" | undefined,
@@ -39,7 +40,7 @@ type State = {
 /**
  * TableScreen componenet to display table of all veterans
  */
-class TableScreen extends Component<Props, State> {
+class HomeScreen extends Component<Props, State> {
   /**
    * Constructor for componenent
    * @param props Props passed to component
@@ -64,7 +65,7 @@ class TableScreen extends Component<Props, State> {
 
     this.state = {
       banners: banners,
-      currentBanners: banners,
+      filteredBanners: banners,
       searchText: "",
       firstNameSortDirection: undefined,
       lastNameSortDirection: "descending",
@@ -168,10 +169,10 @@ class TableScreen extends Component<Props, State> {
     let direction: "ascending" | "descending" | undefined;
 
     direction = this.state.firstNameSortDirection === "descending" ? "ascending" : "descending";
-    banners = this.sortBannersByFirstName(this.state.currentBanners, direction);
+    banners = this.sortBannersByFirstName(this.state.filteredBanners, direction);
 
     this.setState({
-      currentBanners: banners,
+      filteredBanners: banners,
       firstNameSortDirection: direction,
       lastNameSortDirection: undefined,
       branchSortDirection: undefined
@@ -186,10 +187,10 @@ class TableScreen extends Component<Props, State> {
     let direction: "ascending" | "descending" | undefined;
 
     direction = this.state.lastNameSortDirection === "descending" ? "ascending" : "descending";
-    banners = this.sortBannersByLastName(this.state.currentBanners, direction);
+    banners = this.sortBannersByLastName(this.state.filteredBanners, direction);
 
     this.setState({
-      currentBanners: banners,
+      filteredBanners: banners,
       firstNameSortDirection: undefined,
       lastNameSortDirection: direction,
       branchSortDirection: undefined
@@ -204,10 +205,10 @@ class TableScreen extends Component<Props, State> {
     let direction: "ascending" | "descending" | undefined;
 
     direction = this.state.branchSortDirection === "descending" ? "ascending" : "descending";
-    banners = this.sortBannersByBranch(this.state.currentBanners, direction);
+    banners = this.sortBannersByBranch(this.state.filteredBanners, direction);
 
     this.setState({
-      currentBanners: banners,
+      filteredBanners: banners,
       firstNameSortDirection: undefined,
       lastNameSortDirection: undefined,
       branchSortDirection: direction
@@ -222,7 +223,7 @@ class TableScreen extends Component<Props, State> {
       const results = this.state.banners;
 
       this.setState({
-        currentBanners: results,
+        filteredBanners: results,
         searchText: text
       });
 
@@ -238,7 +239,7 @@ class TableScreen extends Component<Props, State> {
       });
 
       this.setState({
-        currentBanners: results,
+        filteredBanners: results,
         searchText: text,
         firstNameSortDirection: undefined,
         lastNameSortDirection: undefined,
@@ -270,9 +271,7 @@ class TableScreen extends Component<Props, State> {
             }}
             width={Dimensions.get('screen').width}
             height={Dimensions.get('screen').height / MAP_PERCENTAGE_FACTOR}
-            markers={this.state.currentBanners.map(banner => {
-              return {latitude: banner.lat, longitude: banner.long};
-            })}
+            markers={[]}
           />
         </View>
 
@@ -294,7 +293,7 @@ class TableScreen extends Component<Props, State> {
           }
         </View>
         
-        <ScrollView style={styles.tableArea}>
+        <View style={styles.tableArea}>
           <Card style={styles.tableAreaCard}>
             <DataTable>
               <DataTable.Header>
@@ -318,19 +317,12 @@ class TableScreen extends Component<Props, State> {
                 </DataTable.Title>
               </DataTable.Header>
 
-              { // Loop through rows of veterans, creating new row for each
-                this.state.currentBanners.map((banner, index) => {
-                  return <TableRow key={`row_${index}`} navigation={this.props.navigation} banner={banner} />;
-                })
-              }
-              {
-                this.state.currentBanners.length === 0 && 
-                  <Text style={styles.noResultsMessage}>No Results Found</Text>
-              }
+              <TableData navigation={this.props.navigation} banners={this.state.filteredBanners} />
+
 
             </DataTable>
           </Card>
-        </ScrollView>
+        </View>
       </View>
     )
   }
@@ -345,11 +337,6 @@ const styles = StyleSheet.create({
   },
   tableAreaCard: {
     minHeight: Dimensions.get('screen').height - SEARCH_AREA_HEIGHT - (Dimensions.get('screen').height / MAP_PERCENTAGE_FACTOR)
-  },
-  noResultsMessage:{
-    flex: 1,
-    padding: 10,
-    textAlign: "center"
   },
   searchArea: {
     height: SEARCH_AREA_HEIGHT,
@@ -366,4 +353,4 @@ const styles = StyleSheet.create({
 });
 
 // Export TableScreen componenet
-export default TableScreen;
+export default HomeScreen;
