@@ -39,7 +39,7 @@ type State = {
 /**
  * TableScreen componenet to display table of all veterans
  */
-class TableScreen extends Component<Props, State> {
+class HomeScreen extends Component<Props, State> {
   /**
    * Constructor for componenent
    * @param props Props passed to component
@@ -366,4 +366,4 @@ const styles = StyleSheet.create({
 });
 
 // Export TableScreen componenet
-export default TableScreen;
+export default HomeScreen;

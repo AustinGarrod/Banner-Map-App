@@ -6,8 +6,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 // Import screens
-import TableScreen from './src/screens/table';
-import DetailsScreen from './src/screens/details';
+import HomeScreen from './src/screens/homeScreen';
+import DetailsScreen from './src/screens/detailsScreen';
 
 // Import typescript values
 import { ScreenStackParams } from './src/typescript/types/screenparams';
@@ -30,7 +30,7 @@ class App extends Component {
           <Stack.Navigator>
             <Stack.Screen 
               name={Screens.TableScreen}
-              component={TableScreen}
+              component={HomeScreen}
               options={{
                 title: 'Tap a name to learn more',
                 headerShown: false
