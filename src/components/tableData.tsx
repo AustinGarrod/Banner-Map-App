@@ -1,6 +1,6 @@
 // Import libraries and componenets
 import React, { memo } from 'react';
-import { ScrollView, Text, StyleSheet } from 'react-native';
+import { Text, StyleSheet } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 // Import custom componenets
@@ -10,6 +10,8 @@ import TableRow from './tableRow';
 import Banner from '../typescript/interfaces/banner';
 import { ScreenStackParams } from '../typescript/types/screenparams';
 import { Screens } from '../typescript/enumerations/screens';
+import { FlatList } from 'react-native-gesture-handler';
+ 
 
 // Define props for component
 interface tableDataProps {
@@ -18,23 +20,23 @@ interface tableDataProps {
 }
 
 // Memoize TableRow componenet
-const MemoizedTableRow = memo(TableRow)
+const MemoizedTableRow = memo(TableRow);
+
+// Component to display when no search results found
+const DataListEmpty = () => (
+  <Text style={styles.noResultsMessage}>No Results Found</Text>
+)
 
 export const TableData = ({ banners, navigation }: tableDataProps) =>{
   return(
-    <ScrollView>
-
-      { // Loop through rows of veterans, creating new row for each
-        banners.map((banner, index) => {
-          return <MemoizedTableRow key={`row_${index}`} navigation={navigation} banner={banner} />;
-        })
-      }
-      {
-        banners.length === 0 &&
-        <Text style={styles.noResultsMessage}>No Results Found</Text>
-      }
-
-    </ScrollView>
+    <FlatList 
+      data={banners}
+      renderItem={({item}) => (
+        (<MemoizedTableRow navigation={navigation} banner={item} />)
+      )}
+      keyExtractor={(banner) => banner.number.toString()}
+      ListEmptyComponent={DataListEmpty}
+    />
   );
 }
 
