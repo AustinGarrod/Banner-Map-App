@@ -13,7 +13,7 @@
 
 ### 'Current'
 
-- Everything is current, so variables should only start with `current` if there is some corresponding non-current variable
+Everything is current, so variables should only start with `current` if there is some corresponding non-current variable
 
 ### Variables
 
