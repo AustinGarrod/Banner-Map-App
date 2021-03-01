@@ -1,5 +1,5 @@
 // Import libraries and components
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { DataTable } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 
@@ -20,7 +20,7 @@ type Props = {
 /**
  * TableRow componenet to create row of veteran data
  */
-class TableRow extends Component<Props> {
+class TableRow extends PureComponent<Props> {
   /**
    * Render method to return TSX
    */
