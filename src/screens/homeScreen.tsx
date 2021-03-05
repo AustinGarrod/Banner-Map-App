@@ -1,12 +1,12 @@
 // Import libraries and components
-import React, { Component } from 'react';
-import { View, Dimensions, StyleSheet, Text } from 'react-native';
+import React, { Component, createRef } from 'react';
+import { View, Dimensions, StyleSheet } from 'react-native';
 import { DataTable, Card, TextInput, FAB } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { FlatList } from 'react-native-gesture-handler';
 import Fuse from 'fuse.js'
 
 // Import custom component
-import TableRow from '../components/tableRow';
 import Map from '../components/map';
 
 //  Import banner data from local file
@@ -17,6 +17,7 @@ import { ScreenStackParams } from '../typescript/types/screenparams';
 import { Screens } from '../typescript/enumerations/screens';
 import Banner from '../typescript/interfaces/banner';
 import { TableData } from '../components/tableData';
+
 
 // Constants
 const MAP_PERCENTAGE_FACTOR = 3.5;
@@ -41,6 +42,8 @@ type State = {
  * TableScreen componenet to display table of all veterans
  */
 class HomeScreen extends Component<Props, State> {
+  tableRef: React.RefObject<FlatList<Banner>>;
+
   /**
    * Constructor for componenent
    * @param props Props passed to component
@@ -50,6 +53,8 @@ class HomeScreen extends Component<Props, State> {
     super(props);
 
     let banners: Banner[];
+
+    this.tableRef = createRef();
 
     // prepare banner data
     banners = this.filterDisabledBanners(bannerData);
@@ -219,6 +224,9 @@ class HomeScreen extends Component<Props, State> {
    * Handles the search functionality
    */
   handleSearchTextChange(text: string){
+    // scroll to top of data table
+    this.tableRef.current?.scrollToIndex({index: 0})
+
     if (text === "") {
       const results = this.state.banners;
 
@@ -255,10 +263,13 @@ class HomeScreen extends Component<Props, State> {
     this.handleSearchTextChange("");
   }
 
+  
+
   /**
    * Render method to return TSX
    */
   render(){
+
     return (
       <View>
         <View style={styles.mapArea}>
@@ -319,7 +330,7 @@ class HomeScreen extends Component<Props, State> {
                 </DataTable.Title>
               </DataTable.Header>
 
-              <TableData navigation={this.props.navigation} banners={this.state.filteredBanners} />
+              <TableData tableRef={this.tableRef} navigation={this.props.navigation} banners={this.state.filteredBanners} />
 
 
             </DataTable>
