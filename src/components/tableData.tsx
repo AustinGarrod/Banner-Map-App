@@ -1,6 +1,7 @@
 // Import libraries and componenets
-import React, { memo } from 'react';
+import React, { memo, RefObject } from 'react';
 import { Text, StyleSheet } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 // Import custom componenets
@@ -10,13 +11,12 @@ import TableRow from './tableRow';
 import Banner from '../typescript/interfaces/banner';
 import { ScreenStackParams } from '../typescript/types/screenparams';
 import { Screens } from '../typescript/enumerations/screens';
-import { FlatList } from 'react-native-gesture-handler';
- 
 
 // Define props for component
 interface tableDataProps {
   banners: Banner[],
   navigation: StackNavigationProp<ScreenStackParams, Screens.TableScreen>
+  tableRef: RefObject<FlatList<Banner>>
 }
 
 // Memoize TableRow componenet
@@ -27,9 +27,10 @@ const DataListEmpty = () => (
   <Text style={styles.noResultsMessage}>No Results Found</Text>
 )
 
-export const TableData = ({ banners, navigation }: tableDataProps) =>{
+export const TableData = ({ banners, navigation, tableRef }: tableDataProps) =>{
   return(
-    <FlatList 
+    <FlatList
+      ref={tableRef}
       data={banners}
       renderItem={({item}) => (
         (<MemoizedTableRow navigation={navigation} banner={item} />)
