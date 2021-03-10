@@ -8,6 +8,8 @@ import Fuse from 'fuse.js'
 
 // Import custom component
 import Map from '../components/map';
+import { TableData } from '../components/tableData';
+import { LoadingScreen } from '../components/loadingScreen';
 
 // Import external values
 import SETTINGS from '../config/settings';
@@ -17,7 +19,6 @@ import SECRETS from '../config/secrets';
 import { ScreenStackParams } from '../typescript/types/screenparams';
 import { Screens } from '../typescript/enumerations/screens';
 import Banner from '../typescript/interfaces/banner';
-import { TableData } from '../components/tableData';
 
 
 // Constants
@@ -299,11 +300,9 @@ class HomeScreen extends Component<Props, State> {
       <View>
         {
           this.state.isDataLoading &&
-          <View style={styles.loadingIndicatorContainer}>
-            <ActivityIndicator animating={true} size="large" />
-            <Text style={styles.loadingText}>Loading Banner Data...</Text>
-          </View>
+          <LoadingScreen loadingTextContent="Loading banner data..." />
         }
+
         <View style={styles.mapArea}>
           <Map 
             region={{
@@ -394,15 +393,6 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     zIndex: 1
-  },
-  loadingIndicatorContainer: {
-    height: Dimensions.get('screen').height,
-    width: Dimensions.get('screen').width,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  loadingText: {
-    marginStart: 10
   }
 });
 

@@ -27,7 +27,6 @@ class DetailsScreen extends Component<Props> {
    */
   render(){
     let details = this.props.route.params.details;
-    console.log(details);
     return (
       <ScrollView>
 
