@@ -10,11 +10,8 @@ import Fuse from 'fuse.js'
 import Map from '../components/map';
 
 // Import external values
-import SETTINGS from '../config/settings'
-import SECRETS from '../config/secrets' 
-
-//  Import banner data from local file
-//import bannerData from '../data/banners.json';
+import SETTINGS from '../config/settings';
+import SECRETS from '../config/secrets';
 
 // Import typescript values
 import { ScreenStackParams } from '../typescript/types/screenparams';
@@ -77,6 +74,9 @@ class HomeScreen extends Component<Props, State> {
     }
   }
 
+  /**
+   * Called after component mounts successfuly
+   */
   componentDidMount() {
     // Get banners from API
     fetch(`${SETTINGS.API_DOMAIN}/api/banner/all`, {
