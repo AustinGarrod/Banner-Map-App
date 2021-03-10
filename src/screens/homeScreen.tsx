@@ -1,7 +1,7 @@
 // Import libraries and components
 import React, { Component, createRef } from 'react';
-import { View, Dimensions, StyleSheet } from 'react-native';
-import { DataTable, Card, TextInput, FAB } from 'react-native-paper';
+import { View, Dimensions, StyleSheet, Text } from 'react-native';
+import { DataTable, Card, TextInput, FAB, ActivityIndicator } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { FlatList } from 'react-native-gesture-handler';
 import Fuse from 'fuse.js'
@@ -9,8 +9,12 @@ import Fuse from 'fuse.js'
 // Import custom component
 import Map from '../components/map';
 
+// Import external values
+import SETTINGS from '../config/settings'
+import SECRETS from '../config/secrets' 
+
 //  Import banner data from local file
-import bannerData from '../data/banners.json';
+//import bannerData from '../data/banners.json';
 
 // Import typescript values
 import { ScreenStackParams } from '../typescript/types/screenparams';
@@ -35,7 +39,8 @@ type State = {
   searchText: string,
   firstNameSortDirection?: "ascending" | "descending" | undefined
   lastNameSortDirection?: "ascending" | "descending" | undefined,
-  branchSortDirection?: "ascending" | "descending" | undefined
+  branchSortDirection?: "ascending" | "descending" | undefined,
+  isDataLoaded: boolean
 }
 
 /**
@@ -52,14 +57,7 @@ class HomeScreen extends Component<Props, State> {
     // Pass props to react componenent class
     super(props);
 
-    let banners: Banner[];
-
     this.tableRef = createRef();
-
-    // prepare banner data
-    banners = this.filterDisabledBanners(bannerData);
-    banners = this.filterUnknownLocationBanners(banners);
-    banners = this.sortBannersByLastName(banners);
 
     // bind this for functions
     this.handleHeaderFirstNameTap = this.handleHeaderFirstNameTap.bind(this);
@@ -69,13 +67,42 @@ class HomeScreen extends Component<Props, State> {
     this.handleClearTextboxTap = this.handleClearTextboxTap.bind(this);
 
     this.state = {
-      banners: banners,
-      filteredBanners: banners,
+      banners: [],
+      filteredBanners: [],
       searchText: "",
       firstNameSortDirection: undefined,
       lastNameSortDirection: "descending",
-      branchSortDirection: undefined
+      branchSortDirection: undefined,
+      isDataLoaded: false
     }
+  }
+
+  componentDidMount() {
+    // Get banners from API
+    fetch(`${SETTINGS.API_DOMAIN}/api/banner/all`, {
+      headers: {
+        "Authorization": `Bearer ${SECRETS.API_KEY}`
+      }
+    })
+    .then(response => {
+      if (response.status !== 200) return Promise.reject(response.body);
+      return Promise.resolve(response);
+    })
+    .then(response => response.json())
+    .then(data => {
+
+      // prepare banner data
+      let banners = this.filterDisabledBanners(data);
+      banners = this.filterUnknownLocationBanners(banners);
+      banners = this.sortBannersByLastName(banners);
+
+      this.setState({
+        banners: banners,
+        filteredBanners: banners,
+        isDataLoaded: true
+      })
+    })
+    .catch(error => { console.log("Failed to load banners", error) });
   }
 
   /**
@@ -263,8 +290,6 @@ class HomeScreen extends Component<Props, State> {
     this.handleSearchTextChange("");
   }
 
-  
-
   /**
    * Render method to return TSX
    */
@@ -272,6 +297,13 @@ class HomeScreen extends Component<Props, State> {
 
     return (
       <View>
+        {
+          !this.state.isDataLoaded &&
+          <View style={styles.loadingIndicatorContainer}>
+            <ActivityIndicator animating={true} size="large" />
+            <Text style={styles.loadingText}>Loading Banner Data...</Text>
+          </View>
+        }
         <View style={styles.mapArea}>
           <Map 
             region={{
@@ -363,6 +395,15 @@ const styles = StyleSheet.create({
     bottom: 0,
     zIndex: 1
   },
+  loadingIndicatorContainer: {
+    height: Dimensions.get('screen').height,
+    width: Dimensions.get('screen').width,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  loadingText: {
+    marginStart: 10
+  }
 });
 
 // Export TableScreen componenet
