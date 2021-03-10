@@ -37,7 +37,7 @@ type State = {
   firstNameSortDirection?: "ascending" | "descending" | undefined
   lastNameSortDirection?: "ascending" | "descending" | undefined,
   branchSortDirection?: "ascending" | "descending" | undefined,
-  isDataLoaded: boolean
+  isDataLoading: boolean
 }
 
 /**
@@ -70,7 +70,7 @@ class HomeScreen extends Component<Props, State> {
       firstNameSortDirection: undefined,
       lastNameSortDirection: "descending",
       branchSortDirection: undefined,
-      isDataLoaded: false
+      isDataLoading: true
     }
   }
 
@@ -99,7 +99,7 @@ class HomeScreen extends Component<Props, State> {
       this.setState({
         banners: banners,
         filteredBanners: banners,
-        isDataLoaded: true
+        isDataLoading: false
       })
     })
     .catch(error => { console.log("Failed to load banners", error) });
@@ -298,7 +298,7 @@ class HomeScreen extends Component<Props, State> {
     return (
       <View>
         {
-          !this.state.isDataLoaded &&
+          this.state.isDataLoading &&
           <View style={styles.loadingIndicatorContainer}>
             <ActivityIndicator animating={true} size="large" />
             <Text style={styles.loadingText}>Loading Banner Data...</Text>
