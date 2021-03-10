@@ -20,10 +20,95 @@ import { ScreenStackParams } from '../typescript/types/screenparams';
 import { Screens } from '../typescript/enumerations/screens';
 import Banner from '../typescript/interfaces/banner';
 
+// Functions to handle filtering
+/**
+   * Filters out banners that are disabled from array of banners
+   * @param banners Array of banners to be filtered
+   * @returns filtered list of banners
+   */
+const filterDisabledBanners = (banners: Banner[]): Banner[] => {
+  return [...banners].filter((banner) => {
+    return banner.enabled === true;
+  });
+}
 
-// Constants
-const MAP_PERCENTAGE_FACTOR = 3.5;
-const SEARCH_AREA_HEIGHT = 75;
+/**
+ * Filters out banners without locations from array of banners
+ * @param banners Array of banners to be filtered
+ * @returns filtered list of banners
+ */
+const filterUnknownLocationBanners = (banners: Banner[]): Banner[] => {
+  return [...banners].filter((banner) => {
+    return banner.lat !== 0 && banner.long !== 0;
+  })
+}
+
+// Functions to handle sorting
+/**
+ * Sort an array banners by first name
+ * @param banners Array of banners to be sorted
+ * @param order Order to sort by, "ascending" or "descending"
+ */
+const sortBannersByFirstName = (banners: Banner[], order?: string): Banner[] => {
+  // Check if order ascending, otherwise assume descending
+  if (order === "ascending") {
+    return [...banners].sort((a, b) => {
+      if (a.firstName < b.firstName) return 1;
+      if (a.firstName > b.firstName) return -1;
+      return 0;
+    });
+  } else {
+    return [...banners].sort((a, b) => {
+      if (a.firstName > b.firstName) return 1;
+      if (a.firstName < b.firstName) return -1;
+      return 0;
+    });
+  }
+}
+
+/**
+ * Sort an array banners by last name
+ * @param banners Array of banners to be sorted
+ * @param order Order to sort by, "ascending" or "descending"
+ */
+const sortBannersByLastName = (banners: Banner[], order?: string): Banner[] => {
+  // Check if order ascending, otherwise assume descending
+  if (order === "ascending") {
+    return [...banners].sort((a, b) => {
+      if (a.lastName < b.lastName) return 1;
+      if (a.lastName > b.lastName) return -1;
+      return 0;
+    });
+  } else {
+    return [...banners].sort((a, b) => {
+      if (a.lastName > b.lastName) return 1;
+      if (a.lastName < b.lastName) return -1;
+      return 0;
+    });
+  }
+}
+
+/**
+ * Sort an array banners by branch
+ * @param banners Array of banners to be sorted
+ * @param order Order to sort by, "ascending" or "descending"
+ */
+const sortBannersByBranch = (banners: Banner[], order?: string): Banner[] => {
+  // Check if order ascending, otherwise assume descending
+  if (order === "ascending") {
+    return [...banners].sort((a, b) => {
+      if (a.branch < b.branch) return 1;
+      if (a.branch > b.branch) return -1;
+      return 0;
+    });
+  } else {
+    return [...banners].sort((a, b) => {
+      if (a.branch > b.branch) return 1;
+      if (a.branch < b.branch) return -1;
+      return 0;
+    });
+  }
+}
 
 // Define props for TableScreen componenet
 type Props = {
@@ -93,9 +178,9 @@ class HomeScreen extends Component<Props, State> {
     .then(data => {
 
       // prepare banner data
-      let banners = this.filterDisabledBanners(data);
-      banners = this.filterUnknownLocationBanners(banners);
-      banners = this.sortBannersByLastName(banners);
+      let banners = filterDisabledBanners(data);
+      banners = filterUnknownLocationBanners(banners);
+      banners = sortBannersByLastName(banners);
 
       this.setState({
         banners: banners,
@@ -107,94 +192,6 @@ class HomeScreen extends Component<Props, State> {
   }
 
   /**
-   * Filters out banners that are disabled from array of banners
-   * @param banners Array of banners to be filtered
-   * @returns filtered list of banners
-   */
-  filterDisabledBanners(banners: Banner[]): Banner[] {
-    return [...banners].filter((banner) => {
-      return banner.enabled === true;
-    });
-  }
-
-  /**
-   * Filters out banners without locations from array of banners
-   * @param banners Array of banners to be filtered
-   * @returns filtered list of banners
-   */
-  filterUnknownLocationBanners(banners: Banner[]): Banner[] {
-    return [...banners].filter((banner) => {
-      return banner.lat !== 0 && banner.long !==0;
-    })
-  }
-
-  /**
-   * Sort an array banners by first name
-   * @param banners Array of banners to be sorted
-   * @param order Order to sort by, "ascending" or "descending"
-   */
-  sortBannersByFirstName(banners: Banner[], order?: string): Banner[] {
-    // Check if order ascending, otherwise assume descending
-    if (order === "ascending") {
-      return [...banners].sort((a ,b) => {
-        if (a.firstName < b.firstName) return 1;
-        if (a.firstName > b.firstName) return -1;
-        return 0;
-      });
-    } else {
-      return [...banners].sort((a ,b) => {
-        if (a.firstName > b.firstName) return 1;
-        if (a.firstName < b.firstName) return -1;
-        return 0;
-      });
-    }
-  }
-
-  /**
-   * Sort an array banners by last name
-   * @param banners Array of banners to be sorted
-   * @param order Order to sort by, "ascending" or "descending"
-   */
-  sortBannersByLastName(banners: Banner[], order?: string): Banner[] {
-    // Check if order ascending, otherwise assume descending
-    if (order === "ascending") {
-      return [...banners].sort((a ,b) => {
-        if (a.lastName < b.lastName) return 1;
-        if (a.lastName > b.lastName) return -1;
-        return 0;
-      });
-    } else {
-      return [...banners].sort((a ,b) => {
-        if (a.lastName > b.lastName) return 1;
-        if (a.lastName < b.lastName) return -1;
-        return 0;
-      });
-    }
-  }
-
-  /**
-   * Sort an array banners by branch
-   * @param banners Array of banners to be sorted
-   * @param order Order to sort by, "ascending" or "descending"
-   */
-  sortBannersByBranch(banners: Banner[], order?: string): Banner[] {
-    // Check if order ascending, otherwise assume descending
-    if (order === "ascending") {
-      return [...banners].sort((a ,b) => {
-        if (a.branch < b.branch) return 1;
-        if (a.branch > b.branch) return -1;
-        return 0;
-      });
-    } else {
-      return [...banners].sort((a ,b) => {
-        if (a.branch > b.branch) return 1;
-        if (a.branch < b.branch) return -1;
-        return 0;
-      });
-    }
-  }
-
-  /**
    * Handles tap on first name header of table
    */
   handleHeaderFirstNameTap(){
@@ -202,7 +199,7 @@ class HomeScreen extends Component<Props, State> {
     let direction: "ascending" | "descending" | undefined;
 
     direction = this.state.firstNameSortDirection === "descending" ? "ascending" : "descending";
-    banners = this.sortBannersByFirstName(this.state.filteredBanners, direction);
+    banners = sortBannersByFirstName(this.state.filteredBanners, direction);
 
     this.setState({
       filteredBanners: banners,
@@ -220,7 +217,7 @@ class HomeScreen extends Component<Props, State> {
     let direction: "ascending" | "descending" | undefined;
 
     direction = this.state.lastNameSortDirection === "descending" ? "ascending" : "descending";
-    banners = this.sortBannersByLastName(this.state.filteredBanners, direction);
+    banners = sortBannersByLastName(this.state.filteredBanners, direction);
 
     this.setState({
       filteredBanners: banners,
@@ -238,7 +235,7 @@ class HomeScreen extends Component<Props, State> {
     let direction: "ascending" | "descending" | undefined;
 
     direction = this.state.branchSortDirection === "descending" ? "ascending" : "descending";
-    banners = this.sortBannersByBranch(this.state.filteredBanners, direction);
+    banners = sortBannersByBranch(this.state.filteredBanners, direction);
 
     this.setState({
       filteredBanners: banners,
@@ -295,7 +292,6 @@ class HomeScreen extends Component<Props, State> {
    * Render method to return TSX
    */
   render(){
-
     return (
       <View>
         {
@@ -312,7 +308,7 @@ class HomeScreen extends Component<Props, State> {
               latitudeDelta: 0.15
             }}
             width={Dimensions.get('screen').width}
-            height={Dimensions.get('screen').height / MAP_PERCENTAGE_FACTOR}
+            height={Dimensions.get('screen').height / SETTINGS.MAP_PERCENTAGE_FACTOR}
             markers={this.state.filteredBanners.map(banner => {
               return { latitude: banner.lat, longitude: banner.long };
             })}
@@ -374,16 +370,16 @@ class HomeScreen extends Component<Props, State> {
 
 const styles = StyleSheet.create({
   mapArea: {
-    height: Dimensions.get('screen').height / MAP_PERCENTAGE_FACTOR
+    height: Dimensions.get('screen').height / SETTINGS.MAP_PERCENTAGE_FACTOR
   },
   tableArea: {
-    height: Dimensions.get('screen').height - SEARCH_AREA_HEIGHT - (Dimensions.get('screen').height / MAP_PERCENTAGE_FACTOR)
+    height: Dimensions.get('screen').height - SETTINGS.SEARCH_AREA_HEIGHT - (Dimensions.get('screen').height / SETTINGS.MAP_PERCENTAGE_FACTOR)
   },
   tableAreaCard: {
-    minHeight: Dimensions.get('screen').height - SEARCH_AREA_HEIGHT - (Dimensions.get('screen').height / MAP_PERCENTAGE_FACTOR)
+    minHeight: Dimensions.get('screen').height - SETTINGS.SEARCH_AREA_HEIGHT - (Dimensions.get('screen').height / SETTINGS.MAP_PERCENTAGE_FACTOR)
   },
   searchArea: {
-    height: SEARCH_AREA_HEIGHT,
+    height: SETTINGS.SEARCH_AREA_HEIGHT,
     padding: 5,
     backgroundColor: "white",
   },
