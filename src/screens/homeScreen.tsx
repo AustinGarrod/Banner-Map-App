@@ -19,6 +19,7 @@ import SECRETS from '../config/secrets';
 import { ScreenStackParams } from '../typescript/types/screenparams';
 import { Screens } from '../typescript/enumerations/screens';
 import Banner from '../typescript/interfaces/banner';
+import { SortDirection } from '../typescript/enumerations/sortDirection'
 
 // Functions to handle filtering
 /**
@@ -27,9 +28,7 @@ import Banner from '../typescript/interfaces/banner';
    * @returns filtered list of banners
    */
 const filterDisabledBanners = (banners: Banner[]): Banner[] => {
-  return [...banners].filter((banner) => {
-    return banner.enabled === true;
-  });
+  return [...banners].filter((banner) => banner.enabled === true );
 }
 
 /**
@@ -38,9 +37,7 @@ const filterDisabledBanners = (banners: Banner[]): Banner[] => {
  * @returns filtered list of banners
  */
 const filterUnknownLocationBanners = (banners: Banner[]): Banner[] => {
-  return [...banners].filter((banner) => {
-    return banner.lat !== 0 && banner.long !== 0;
-  })
+  return [...banners].filter((banner) => banner.lat !== 0 && banner.long !== 0 )
 }
 
 // Functions to handle sorting
@@ -49,9 +46,9 @@ const filterUnknownLocationBanners = (banners: Banner[]): Banner[] => {
  * @param banners Array of banners to be sorted
  * @param order Order to sort by, "ascending" or "descending"
  */
-const sortBannersByFirstName = (banners: Banner[], order?: string): Banner[] => {
+const sortBannersByFirstName = (banners: Banner[], order?: SortDirection): Banner[] => {
   // Check if order ascending, otherwise assume descending
-  if (order === "ascending") {
+  if (order === SortDirection.ascending) {
     return [...banners].sort((a, b) => {
       if (a.firstName < b.firstName) return 1;
       if (a.firstName > b.firstName) return -1;
@@ -71,9 +68,9 @@ const sortBannersByFirstName = (banners: Banner[], order?: string): Banner[] => 
  * @param banners Array of banners to be sorted
  * @param order Order to sort by, "ascending" or "descending"
  */
-const sortBannersByLastName = (banners: Banner[], order?: string): Banner[] => {
+const sortBannersByLastName = (banners: Banner[], order?: SortDirection): Banner[] => {
   // Check if order ascending, otherwise assume descending
-  if (order === "ascending") {
+  if (order === SortDirection.ascending) {
     return [...banners].sort((a, b) => {
       if (a.lastName < b.lastName) return 1;
       if (a.lastName > b.lastName) return -1;
@@ -93,9 +90,9 @@ const sortBannersByLastName = (banners: Banner[], order?: string): Banner[] => {
  * @param banners Array of banners to be sorted
  * @param order Order to sort by, "ascending" or "descending"
  */
-const sortBannersByBranch = (banners: Banner[], order?: string): Banner[] => {
+const sortBannersByBranch = (banners: Banner[], order?: SortDirection): Banner[] => {
   // Check if order ascending, otherwise assume descending
-  if (order === "ascending") {
+  if (order === SortDirection.ascending) {
     return [...banners].sort((a, b) => {
       if (a.branch < b.branch) return 1;
       if (a.branch > b.branch) return -1;
@@ -120,9 +117,9 @@ type State = {
   banners: Banner[],
   filteredBanners: Banner[],
   searchText: string,
-  firstNameSortDirection?: "ascending" | "descending" | undefined
-  lastNameSortDirection?: "ascending" | "descending" | undefined,
-  branchSortDirection?: "ascending" | "descending" | undefined,
+  firstNameSortDirection?: SortDirection,
+  lastNameSortDirection?: SortDirection,
+  branchSortDirection?: SortDirection,
   isDataLoading: boolean
 }
 
@@ -154,7 +151,7 @@ class HomeScreen extends Component<Props, State> {
       filteredBanners: [],
       searchText: "",
       firstNameSortDirection: undefined,
-      lastNameSortDirection: "descending",
+      lastNameSortDirection: SortDirection.descending,
       branchSortDirection: undefined,
       isDataLoading: true
     }
@@ -196,9 +193,9 @@ class HomeScreen extends Component<Props, State> {
    */
   handleHeaderFirstNameTap(){
     let banners: Banner[];
-    let direction: "ascending" | "descending" | undefined;
+    let direction: SortDirection;
 
-    direction = this.state.firstNameSortDirection === "descending" ? "ascending" : "descending";
+    direction = this.state.firstNameSortDirection === SortDirection.descending ? SortDirection.ascending : SortDirection.descending;
     banners = sortBannersByFirstName(this.state.filteredBanners, direction);
 
     this.setState({
@@ -214,9 +211,9 @@ class HomeScreen extends Component<Props, State> {
    */
   handleHeaderLastNameTap(){
     let banners: Banner[];
-    let direction: "ascending" | "descending" | undefined;
+    let direction: SortDirection;
 
-    direction = this.state.lastNameSortDirection === "descending" ? "ascending" : "descending";
+    direction = this.state.lastNameSortDirection === SortDirection.descending ? SortDirection.ascending : SortDirection.descending;
     banners = sortBannersByLastName(this.state.filteredBanners, direction);
 
     this.setState({
@@ -232,9 +229,9 @@ class HomeScreen extends Component<Props, State> {
    */
   handleHeaderBranchTap(){
     let banners: Banner[];
-    let direction: "ascending" | "descending" | undefined;
+    let direction: SortDirection;
 
-    direction = this.state.branchSortDirection === "descending" ? "ascending" : "descending";
+    direction = this.state.branchSortDirection === SortDirection.descending ? SortDirection.ascending : SortDirection.descending;
     banners = sortBannersByBranch(this.state.filteredBanners, direction);
 
     this.setState({
