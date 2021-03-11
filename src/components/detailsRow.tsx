@@ -2,14 +2,14 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-// Define props for componenet
+// Define props for component
 type Props = {
   title: string,
   value: string
 }
 
 /**
- * Componenet to display details for veteran
+ * Component to display details for veteran
  */
 class DetailsRow extends Component<Props> {
   /**
@@ -29,7 +29,7 @@ class DetailsRow extends Component<Props> {
   }
 }
 
-// Styles to format componenet
+// Styles to format component
 const styles = StyleSheet.create({
   row: {
     flex: 1,
@@ -52,5 +52,5 @@ const styles = StyleSheet.create({
   }
 });
 
-// Export TableRow componenet
+// Export TableRow component
 export default DetailsRow;

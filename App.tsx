@@ -17,7 +17,7 @@ import { Screens } from './src/typescript/enumerations/screens';
 const Stack = createStackNavigator<ScreenStackParams>();
 
 /**
- * Main app componenet to hold screens for navigation
+ * Main app component to hold screens for navigation
  */
 class App extends Component {
   /**
@@ -50,5 +50,5 @@ class App extends Component {
   }
 }
 
-// Export the main app componenet
+// Export the main app component
 export default App;
