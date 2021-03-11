@@ -1,10 +1,10 @@
-// Import libraries and componenets
+// Import libraries and component
 import React, { memo, RefObject } from 'react';
 import { Text, StyleSheet } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-// Import custom componenets
+// Import custom component
 import TableRow from './tableRow';
 
 // Import typescript definitions
@@ -15,11 +15,11 @@ import { Screens } from '../typescript/enumerations/screens';
 // Define props for component
 interface tableDataProps {
   banners: Banner[],
-  navigation: StackNavigationProp<ScreenStackParams, Screens.TableScreen>
+  navigation: StackNavigationProp<ScreenStackParams, Screens.HomeScreen>
   tableRef: RefObject<FlatList<Banner>>
 }
 
-// Memoize TableRow componenet
+// Memoize TableRow component
 const MemoizedTableRow = memo(TableRow);
 
 // Component to display when no search results found

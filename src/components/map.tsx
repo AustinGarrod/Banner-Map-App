@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet,  Dimensions } from 'react-native';
 import MapView, { Marker, Region, LatLng } from 'react-native-maps';
 
-// Define props for DetailsScreen componenet
+// Define props for DetailsScreen component
 type Props = {
   region: Region,
   markers: LatLng[],
@@ -45,5 +45,5 @@ const styles = StyleSheet.create({
   }
 });
 
-// Export the details screen componenet
+// Export the details screen component
 export default Map;

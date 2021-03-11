@@ -4,11 +4,11 @@ import { ScrollView, Dimensions } from 'react-native';
 import { Card } from 'react-native-paper'
 import Banner from '../typescript/interfaces/banner';
 
-// Import componenets
+// Import component
 import DetailsRow from '../components/detailsRow'
 import Map from '../components/map';
 
-// Define props for DetailsScreen componenet
+// Define props for DetailsScreen component
 type Props = {
   route: { 
     params: {
@@ -18,7 +18,7 @@ type Props = {
 }
 
 /**
- * Details screen componenet to display individual veteran details
+ * Details screen component to display individual veteran details
  */
 class DetailsScreen extends Component<Props> {
 
@@ -27,7 +27,6 @@ class DetailsScreen extends Component<Props> {
    */
   render(){
     let details = this.props.route.params.details;
-
     return (
       <ScrollView>
 
@@ -56,5 +55,5 @@ class DetailsScreen extends Component<Props> {
   }
 }
 
-// Export the details screen componenet
+// Export the details screen component
 export default DetailsScreen;

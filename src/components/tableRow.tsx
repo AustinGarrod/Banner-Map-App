@@ -9,16 +9,16 @@ import { Screens } from '../typescript/enumerations/screens';
 import { ScreenStackParams } from '../typescript/types/screenparams';
 
 // Create custom navigation props definition 
-type TableNavigationProps = StackNavigationProp<ScreenStackParams, Screens.TableScreen>
+type TableNavigationProps = StackNavigationProp<ScreenStackParams, Screens.HomeScreen>
 
-// Define props for TableRow componenet
+// Define props for TableRow component
 type Props = {
   banner: Banner,
   navigation: TableNavigationProps,
 }
 
 /**
- * TableRow componenet to create row of veteran data
+ * TableRow component to create row of veteran data
  */
 class TableRow extends PureComponent<Props> {
   /**
@@ -39,5 +39,5 @@ class TableRow extends PureComponent<Props> {
   }
 }
 
-// Export TableRow componenet
+// Export TableRow component
 export default TableRow;

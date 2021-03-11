@@ -8,58 +8,136 @@ import Fuse from 'fuse.js'
 
 // Import custom component
 import Map from '../components/map';
+import { TableData } from '../components/tableData';
+import { LoadingScreen } from '../components/loadingScreen';
 
-//  Import banner data from local file
-import bannerData from '../data/banners.json';
+// Import external values
+import SETTINGS from '../config/settings';
+import SECRETS from '../config/secrets';
 
 // Import typescript values
 import { ScreenStackParams } from '../typescript/types/screenparams';
 import { Screens } from '../typescript/enumerations/screens';
 import Banner from '../typescript/interfaces/banner';
-import { TableData } from '../components/tableData';
+import { SortDirection } from '../typescript/enumerations/sortDirection'
 
-
-// Constants
-const MAP_PERCENTAGE_FACTOR = 3.5;
-const SEARCH_AREA_HEIGHT = 75;
-
-// Define props for TableScreen componenet
-type Props = {
-  navigation: StackNavigationProp<ScreenStackParams, Screens.TableScreen>
+// Functions to handle filtering
+/**
+   * Filters out banners that are disabled from array of banners
+   * @param banners Array of banners to be filtered
+   * @returns filtered list of banners
+   */
+const filterDisabledBanners = (banners: Banner[]): Banner[] => {
+  return [...banners].filter((banner) => banner.enabled === true );
 }
 
-// Define state for TableScreen componenet
+/**
+ * Filters out banners without locations from array of banners
+ * @param banners Array of banners to be filtered
+ * @returns filtered list of banners
+ */
+const filterUnknownLocationBanners = (banners: Banner[]): Banner[] => {
+  return [...banners].filter((banner) => banner.lat !== 0 && banner.long !== 0 )
+}
+
+// Functions to handle sorting
+/**
+ * Sort an array banners by first name
+ * @param banners Array of banners to be sorted
+ * @param order Order to sort by, "ascending" or "descending"
+ */
+const sortBannersByFirstName = (banners: Banner[], order?: SortDirection): Banner[] => {
+  // Check if order ascending, otherwise assume descending
+  if (order === SortDirection.ascending) {
+    return [...banners].sort((a, b) => {
+      if (a.firstName < b.firstName) return 1;
+      if (a.firstName > b.firstName) return -1;
+      return 0;
+    });
+  } else {
+    return [...banners].sort((a, b) => {
+      if (a.firstName > b.firstName) return 1;
+      if (a.firstName < b.firstName) return -1;
+      return 0;
+    });
+  }
+}
+
+/**
+ * Sort an array banners by last name
+ * @param banners Array of banners to be sorted
+ * @param order Order to sort by, "ascending" or "descending"
+ */
+const sortBannersByLastName = (banners: Banner[], order?: SortDirection): Banner[] => {
+  // Check if order ascending, otherwise assume descending
+  if (order === SortDirection.ascending) {
+    return [...banners].sort((a, b) => {
+      if (a.lastName < b.lastName) return 1;
+      if (a.lastName > b.lastName) return -1;
+      return 0;
+    });
+  } else {
+    return [...banners].sort((a, b) => {
+      if (a.lastName > b.lastName) return 1;
+      if (a.lastName < b.lastName) return -1;
+      return 0;
+    });
+  }
+}
+
+/**
+ * Sort an array banners by branch
+ * @param banners Array of banners to be sorted
+ * @param order Order to sort by, "ascending" or "descending"
+ */
+const sortBannersByBranch = (banners: Banner[], order?: SortDirection): Banner[] => {
+  // Check if order ascending, otherwise assume descending
+  if (order === SortDirection.ascending) {
+    return [...banners].sort((a, b) => {
+      if (a.branch < b.branch) return 1;
+      if (a.branch > b.branch) return -1;
+      return 0;
+    });
+  } else {
+    return [...banners].sort((a, b) => {
+      if (a.branch > b.branch) return 1;
+      if (a.branch < b.branch) return -1;
+      return 0;
+    });
+  }
+}
+
+// Define props for HomeScreen component
+type Props = {
+  navigation: StackNavigationProp<ScreenStackParams, Screens.HomeScreen>
+}
+
+// Define state for HomeScreen component
 type State = {
   banners: Banner[],
   filteredBanners: Banner[],
   searchText: string,
-  firstNameSortDirection?: "ascending" | "descending" | undefined
-  lastNameSortDirection?: "ascending" | "descending" | undefined,
-  branchSortDirection?: "ascending" | "descending" | undefined
+  firstNameSortDirection?: SortDirection,
+  lastNameSortDirection?: SortDirection,
+  branchSortDirection?: SortDirection,
+  isDataLoading: boolean
 }
 
 /**
- * TableScreen componenet to display table of all veterans
+ * HomeScreen component to display table of all veterans
  */
 class HomeScreen extends Component<Props, State> {
   tableRef: React.RefObject<FlatList<Banner>>;
 
   /**
-   * Constructor for componenent
+   * Constructor for component
    * @param props Props passed to component
    */
   constructor(props: Props){
-    // Pass props to react componenent class
+    // Pass props to react component class
     super(props);
 
-    let banners: Banner[];
-
     this.tableRef = createRef();
-
-    // prepare banner data
-    banners = this.filterDisabledBanners(bannerData);
-    banners = this.filterUnknownLocationBanners(banners);
-    banners = this.sortBannersByLastName(banners);
 
     // bind this for functions
     this.handleHeaderFirstNameTap = this.handleHeaderFirstNameTap.bind(this);
@@ -69,101 +147,45 @@ class HomeScreen extends Component<Props, State> {
     this.handleClearTextboxTap = this.handleClearTextboxTap.bind(this);
 
     this.state = {
-      banners: banners,
-      filteredBanners: banners,
+      banners: [],
+      filteredBanners: [],
       searchText: "",
       firstNameSortDirection: undefined,
-      lastNameSortDirection: "descending",
-      branchSortDirection: undefined
+      lastNameSortDirection: SortDirection.descending,
+      branchSortDirection: undefined,
+      isDataLoading: true
     }
   }
 
   /**
-   * Filters out banners that are disabled from array of banners
-   * @param banners Array of banners to be filtered
-   * @returns filtered list of banners
+   * Called after component mounts successfully
    */
-  filterDisabledBanners(banners: Banner[]): Banner[] {
-    return [...banners].filter((banner) => {
-      return banner.enabled === true;
-    });
-  }
-
-  /**
-   * Filters out banners without locations from array of banners
-   * @param banners Array of banners to be filtered
-   * @returns filtered list of banners
-   */
-  filterUnknownLocationBanners(banners: Banner[]): Banner[] {
-    return [...banners].filter((banner) => {
-      return banner.lat !== 0 && banner.long !==0;
+  componentDidMount() {
+    // Get banners from API
+    fetch(`${SETTINGS.API_DOMAIN}/api/banner/all`, {
+      headers: {
+        "Authorization": `Bearer ${SECRETS.API_KEY}`
+      }
     })
-  }
+    .then(response => {
+      if (response.status !== 200) return Promise.reject(response.body);
+      return Promise.resolve(response);
+    })
+    .then(response => response.json())
+    .then(data => {
 
-  /**
-   * Sort an array banners by first name
-   * @param banners Array of banners to be sorted
-   * @param order Order to sort by, "ascending" or "descending"
-   */
-  sortBannersByFirstName(banners: Banner[], order?: string): Banner[] {
-    // Check if order ascending, otherwise assume descending
-    if (order === "ascending") {
-      return [...banners].sort((a ,b) => {
-        if (a.firstName < b.firstName) return 1;
-        if (a.firstName > b.firstName) return -1;
-        return 0;
-      });
-    } else {
-      return [...banners].sort((a ,b) => {
-        if (a.firstName > b.firstName) return 1;
-        if (a.firstName < b.firstName) return -1;
-        return 0;
-      });
-    }
-  }
+      // prepare banner data
+      let banners = filterDisabledBanners(data);
+      banners = filterUnknownLocationBanners(banners);
+      banners = sortBannersByLastName(banners);
 
-  /**
-   * Sort an array banners by last name
-   * @param banners Array of banners to be sorted
-   * @param order Order to sort by, "ascending" or "descending"
-   */
-  sortBannersByLastName(banners: Banner[], order?: string): Banner[] {
-    // Check if order ascending, otherwise assume descending
-    if (order === "ascending") {
-      return [...banners].sort((a ,b) => {
-        if (a.lastName < b.lastName) return 1;
-        if (a.lastName > b.lastName) return -1;
-        return 0;
-      });
-    } else {
-      return [...banners].sort((a ,b) => {
-        if (a.lastName > b.lastName) return 1;
-        if (a.lastName < b.lastName) return -1;
-        return 0;
-      });
-    }
-  }
-
-  /**
-   * Sort an array banners by branch
-   * @param banners Array of banners to be sorted
-   * @param order Order to sort by, "ascending" or "descending"
-   */
-  sortBannersByBranch(banners: Banner[], order?: string): Banner[] {
-    // Check if order ascending, otherwise assume descending
-    if (order === "ascending") {
-      return [...banners].sort((a ,b) => {
-        if (a.branch < b.branch) return 1;
-        if (a.branch > b.branch) return -1;
-        return 0;
-      });
-    } else {
-      return [...banners].sort((a ,b) => {
-        if (a.branch > b.branch) return 1;
-        if (a.branch < b.branch) return -1;
-        return 0;
-      });
-    }
+      this.setState({
+        banners: banners,
+        filteredBanners: banners,
+        isDataLoading: false
+      })
+    })
+    .catch(error => { console.log("Failed to load banners", error) });
   }
 
   /**
@@ -171,10 +193,10 @@ class HomeScreen extends Component<Props, State> {
    */
   handleHeaderFirstNameTap(){
     let banners: Banner[];
-    let direction: "ascending" | "descending" | undefined;
+    let direction: SortDirection;
 
-    direction = this.state.firstNameSortDirection === "descending" ? "ascending" : "descending";
-    banners = this.sortBannersByFirstName(this.state.filteredBanners, direction);
+    direction = this.state.firstNameSortDirection === SortDirection.descending ? SortDirection.ascending : SortDirection.descending;
+    banners = sortBannersByFirstName(this.state.filteredBanners, direction);
 
     this.setState({
       filteredBanners: banners,
@@ -189,10 +211,10 @@ class HomeScreen extends Component<Props, State> {
    */
   handleHeaderLastNameTap(){
     let banners: Banner[];
-    let direction: "ascending" | "descending" | undefined;
+    let direction: SortDirection;
 
-    direction = this.state.lastNameSortDirection === "descending" ? "ascending" : "descending";
-    banners = this.sortBannersByLastName(this.state.filteredBanners, direction);
+    direction = this.state.lastNameSortDirection === SortDirection.descending ? SortDirection.ascending : SortDirection.descending;
+    banners = sortBannersByLastName(this.state.filteredBanners, direction);
 
     this.setState({
       filteredBanners: banners,
@@ -207,10 +229,10 @@ class HomeScreen extends Component<Props, State> {
    */
   handleHeaderBranchTap(){
     let banners: Banner[];
-    let direction: "ascending" | "descending" | undefined;
+    let direction: SortDirection;
 
-    direction = this.state.branchSortDirection === "descending" ? "ascending" : "descending";
-    banners = this.sortBannersByBranch(this.state.filteredBanners, direction);
+    direction = this.state.branchSortDirection === SortDirection.descending ? SortDirection.ascending : SortDirection.descending;
+    banners = sortBannersByBranch(this.state.filteredBanners, direction);
 
     this.setState({
       filteredBanners: banners,
@@ -263,15 +285,17 @@ class HomeScreen extends Component<Props, State> {
     this.handleSearchTextChange("");
   }
 
-  
-
   /**
    * Render method to return TSX
    */
   render(){
-
     return (
       <View>
+        {
+          this.state.isDataLoading &&
+          <LoadingScreen loadingTextContent="Loading banner data..." />
+        }
+
         <View style={styles.mapArea}>
           <Map 
             region={{
@@ -281,7 +305,7 @@ class HomeScreen extends Component<Props, State> {
               latitudeDelta: 0.15
             }}
             width={Dimensions.get('screen').width}
-            height={Dimensions.get('screen').height / MAP_PERCENTAGE_FACTOR}
+            height={Dimensions.get('screen').height / SETTINGS.MAP_PERCENTAGE_FACTOR}
             markers={this.state.filteredBanners.map(banner => {
               return { latitude: banner.lat, longitude: banner.long };
             })}
@@ -343,16 +367,16 @@ class HomeScreen extends Component<Props, State> {
 
 const styles = StyleSheet.create({
   mapArea: {
-    height: Dimensions.get('screen').height / MAP_PERCENTAGE_FACTOR
+    height: Dimensions.get('screen').height / SETTINGS.MAP_PERCENTAGE_FACTOR
   },
   tableArea: {
-    height: Dimensions.get('screen').height - SEARCH_AREA_HEIGHT - (Dimensions.get('screen').height / MAP_PERCENTAGE_FACTOR)
+    height: Dimensions.get('screen').height - SETTINGS.SEARCH_AREA_HEIGHT - (Dimensions.get('screen').height / SETTINGS.MAP_PERCENTAGE_FACTOR)
   },
   tableAreaCard: {
-    minHeight: Dimensions.get('screen').height - SEARCH_AREA_HEIGHT - (Dimensions.get('screen').height / MAP_PERCENTAGE_FACTOR)
+    minHeight: Dimensions.get('screen').height - SETTINGS.SEARCH_AREA_HEIGHT - (Dimensions.get('screen').height / SETTINGS.MAP_PERCENTAGE_FACTOR)
   },
   searchArea: {
-    height: SEARCH_AREA_HEIGHT,
+    height: SETTINGS.SEARCH_AREA_HEIGHT,
     padding: 5,
     backgroundColor: "white",
   },
@@ -362,8 +386,8 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     zIndex: 1
-  },
+  }
 });
 
-// Export TableScreen componenet
+// Export HomeScreen component
 export default HomeScreen;
