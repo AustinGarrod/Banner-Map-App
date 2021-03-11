@@ -1,7 +1,7 @@
 // Import libraries and components
 import React, { Component, createRef } from 'react';
-import { View, Dimensions, StyleSheet, Text } from 'react-native';
-import { DataTable, Card, TextInput, FAB, ActivityIndicator } from 'react-native-paper';
+import { View, Dimensions, StyleSheet } from 'react-native';
+import { DataTable, Card, TextInput, FAB } from 'react-native-paper';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { FlatList } from 'react-native-gesture-handler';
 import Fuse from 'fuse.js'
@@ -107,12 +107,12 @@ const sortBannersByBranch = (banners: Banner[], order?: SortDirection): Banner[]
   }
 }
 
-// Define props for TableScreen componenet
+// Define props for HomeScreen component
 type Props = {
-  navigation: StackNavigationProp<ScreenStackParams, Screens.TableScreen>
+  navigation: StackNavigationProp<ScreenStackParams, Screens.HomeScreen>
 }
 
-// Define state for TableScreen componenet
+// Define state for HomeScreen component
 type State = {
   banners: Banner[],
   filteredBanners: Banner[],
@@ -124,17 +124,17 @@ type State = {
 }
 
 /**
- * TableScreen componenet to display table of all veterans
+ * HomeScreen component to display table of all veterans
  */
 class HomeScreen extends Component<Props, State> {
   tableRef: React.RefObject<FlatList<Banner>>;
 
   /**
-   * Constructor for componenent
+   * Constructor for component
    * @param props Props passed to component
    */
   constructor(props: Props){
-    // Pass props to react componenent class
+    // Pass props to react component class
     super(props);
 
     this.tableRef = createRef();
@@ -158,7 +158,7 @@ class HomeScreen extends Component<Props, State> {
   }
 
   /**
-   * Called after component mounts successfuly
+   * Called after component mounts successfully
    */
   componentDidMount() {
     // Get banners from API
@@ -389,5 +389,5 @@ const styles = StyleSheet.create({
   }
 });
 
-// Export TableScreen componenet
+// Export HomeScreen component
 export default HomeScreen;

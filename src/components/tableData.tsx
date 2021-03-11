@@ -15,7 +15,7 @@ import { Screens } from '../typescript/enumerations/screens';
 // Define props for component
 interface tableDataProps {
   banners: Banner[],
-  navigation: StackNavigationProp<ScreenStackParams, Screens.TableScreen>
+  navigation: StackNavigationProp<ScreenStackParams, Screens.HomeScreen>
   tableRef: RefObject<FlatList<Banner>>
 }
 

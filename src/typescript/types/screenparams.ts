@@ -5,6 +5,6 @@ import Banner from "../interfaces/banner";
  * Define paramaters passed to screen stacks from navigation
  */
 export type ScreenStackParams = {
-  TableScreen: undefined;
+  HomeScreen: undefined;
   DetailsScreen: {details: Banner};
 }

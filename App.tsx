@@ -29,7 +29,7 @@ class App extends Component {
         <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen 
-              name={Screens.TableScreen}
+              name={Screens.HomeScreen}
               component={HomeScreen}
               options={{
                 title: 'Tap a name to learn more',

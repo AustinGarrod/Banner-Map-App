@@ -9,7 +9,7 @@ import { Screens } from '../typescript/enumerations/screens';
 import { ScreenStackParams } from '../typescript/types/screenparams';
 
 // Create custom navigation props definition 
-type TableNavigationProps = StackNavigationProp<ScreenStackParams, Screens.TableScreen>
+type TableNavigationProps = StackNavigationProp<ScreenStackParams, Screens.HomeScreen>
 
 // Define props for TableRow componenet
 type Props = {
